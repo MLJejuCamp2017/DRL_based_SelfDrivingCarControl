@@ -60,9 +60,9 @@ For more information about my DQN codes, check out [my DRL github repo](https://
 
 Also, this are the links for my Driving Simulators.
 
-[ADAS Version] - Windows
+[ADAS Version](https://www.dropbox.com/s/33iscinb81n2uue/Qarsim_ADAS.zip?dl=0) - Windows
 
-[No ADAS Version] - Windows
+[No ADAS Version](https://www.dropbox.com/s/kfc7a45jcte1ozp/Qarsim_NoADAS.zip?dl=0) - Windows
 
 Working on Mac and Linux version.... 
 
@@ -143,9 +143,16 @@ Also, I used `Prioritized Experience Replay` when I choose mini batch and I used
 
 ## Result 
 
-I'm still training this model… 
+#### Before Training 
 
-I will upload the result before final presentation. (2017. 07. 27) 
+<img src="./Images/BeforeTraining.gif" alt="Result(Before Learning)" style="width: 600px;"/>
 
 
 
+#### After Training
+
+<img src="./Images/AfterTraining.gif" alt="Result(After Learning)" style="width: 600px;"/>
+
+
+
+After training, host vehicle drives mush faster (almost at the maximum speed!!!) with little bit of lane change!! Yeah! ​:happy:​
