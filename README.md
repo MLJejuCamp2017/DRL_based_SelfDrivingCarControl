@@ -52,11 +52,9 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 * drive_Combined.py: This is DQN model for the simulator.
 
 
-I also upload the other DQN codes which I tested with the games that I made. 
+I also upload the other DQN codes which I tested with the games that I made. Check out [my DRL github repo](https://github.com/Kyushik/DRL) 
 
-For more information about my DQN codes, check out [my DRL github repo](https://github.com/Kyushik/DRL) 
-
-
+This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pptx?dl=0) of `final presentation`
 
 Also, this are the links for my Driving Simulators.
 
@@ -143,6 +141,14 @@ Also, I used `Prioritized Experience Replay` when I choose mini batch and I used
 
 ## Result 
 
+This is graph of step - average reward (1000 steps)
+
+![Average_reward_graph](C:\Users\Q\Desktop\JejuGithub\Images\Average_reward_graph.png)
+
+The average reward increases! (2.4 ~ 4.2)
+
+
+
 #### Before Training 
 
 <img src="./Images/BeforeTraining.gif" alt="Result(Before Learning)" style="width: 600px;"/>
@@ -155,4 +161,4 @@ Also, I used `Prioritized Experience Replay` when I choose mini batch and I used
 
 
 
-After training, host vehicle drives mush faster (almost at the maximum speed!!!) with little bit of lane change!! Yeah! ​:happy:​
+After training, host vehicle drives mush faster (almost at the maximum speed!!!) with little lane change!! Yeah! :happy:

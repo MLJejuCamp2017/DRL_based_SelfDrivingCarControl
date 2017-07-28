@@ -21,9 +21,6 @@ from PIL import ImageOps
 from flask import Flask, render_template
 from io import BytesIO
 
-# from keras.models import model_from_json
-# from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array
-
 # Modules for DQN
 import tensorflow as tf
 import math
@@ -33,8 +30,6 @@ import numpy as np
 import copy
 import matplotlib.pyplot as plt 
 import datetime
-
-import pickle
 
 # Unity connection
 sio = socketio.Server()
@@ -370,12 +365,6 @@ action_old = np.array([1, 0, 0, 0, 0])
 speed_old = 20
 Was_left_changing = False
 Was_right_changing = False
-# # Load experience replay
-# check_replay = input('Do you want to load Replay memory?(1=y/2=n): ')
-# if check_replay == 1:
-# 	with open('Replay_memory.pickle', 'rb') as handle:
-#     	b = pickle.load(handle)
-#     	step = Num_start_training
 
 # Communication with Unity
 @sio.on('telemetry')
@@ -413,7 +402,7 @@ def telemetry(sid, data):
 	# plt.grid(True)
 	# plt.draw()
 
-	# ## Saving the plot image 
+	# ## Saving plot image 
 	# #plt.savefig("./savePlot/" + str(step) + ".png")
 	
 	# plt.pause(0.000001)
@@ -615,10 +604,10 @@ def telemetry(sid, data):
 
 				Replay_memory[RM_index_crash][3] = reward_bad
 
-	# It shows action is decided by random or Q network while training
+	# It shows action which is decided by random or Q network while training
 	Action_from = ''
 
-	# If step is less than Num_start_training, stack replay memory
+	# If step is less than Num_start_training, store replay memory
 	if step <= Num_start_training:
 		state = 'Observing'
 
@@ -741,7 +730,7 @@ def telemetry(sid, data):
 
 		train_step.run(feed_dict = {action_target: action_batch, y_prediction: y_batch, x_img: observation_batch_img, x_map: observation_batch_map, w_is: w_batch})
 
-	    # save progress every 10000 iterations
+	    # save progress every certain steps
 		if step % Num_step_save == 0:
 			saver.save(sess, '../../saved_networks_Combined_DDQN/Qarsim')
 			print('Model is saved!!!')
@@ -800,12 +789,12 @@ def telemetry(sid, data):
 
 		plt.plot(np.average(reward_x), np.average(reward_y), hold = True, marker = '*', ms = 5)
 		plt.draw()
-		plt.pause(0.000001)
+		plt.pause(0.001)
 
 		reward_x = []
 		reward_y = []
 
-	# Get action old and speed old
+	# Get current variables to old vatiables
 	observation_in_img = observation_next_in_img
 	observation_in_map = observation_next_in_map
 
