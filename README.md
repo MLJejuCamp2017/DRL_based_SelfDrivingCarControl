@@ -1,30 +1,6 @@
 # DRL Based Self Driving Car Control
 
-## Version Info.
-
-### version 0.1
-
-#### Issues
-
-- Sometimes connection of simulator and DRL code is disconnected
-- Simulator is developer version, sometimes error message can be appeared, so please close the console
-- Simulator is window version. After some major problems are solved, I will make Mac and Linux version. 
-
-
-
-### Version 0.2
-
-#### Fixed!
-
-- The major problem is solved! `No disconnection` happens in 150000 steps! Yeah~ :smiley:
-- There is `no error message` in simulator, so it doesn't need to build it as a developer version
-
-#### Issues
-
-- Speed of training and observing / testing is so different
-- It needs more front sensors! 
-- Forward control is so rapid!!
-- Text position changes depending on resolution
+## Version 0.2
 
 ---
 
