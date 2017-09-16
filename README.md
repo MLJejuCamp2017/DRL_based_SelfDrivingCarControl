@@ -2,6 +2,8 @@
 
 ## Version 0.2
 
+[Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
+
 ---
 
 ## Introduction
