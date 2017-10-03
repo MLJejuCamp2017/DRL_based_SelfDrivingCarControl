@@ -1,12 +1,20 @@
 # Version Information
 
-### version 0.1
+### Version 0.3
+
+#### Fixed!
+
+- There are three front warning sensors for vehicles (Front Left, Center, Right)
+- Vehicles control their speed same as the speed of the vehicle at the front when there is front warning.
+- Vehicle control parameters were changed
 
 #### Issues
 
-- Sometimes connection of simulator and DRL code is disconnected
-- Simulator is developer version, sometimes error message can be appeared, so please close the console
-- Simulator is window version. After some major problems are solved, I will make Mac and Linux version. 
+- Text position changes depending on resolution
+- Linux and Mac version of the simulator
+- DRL algorithm is needed to be fixed!! 
+
+---
 
 ### Version 0.2
 
@@ -21,3 +29,13 @@
 - It needs more front sensors! 
 - Forward control is so rapid!!
 - Text position changes depending on resolution
+
+---
+
+### version 0.1
+
+#### Issues
+
+- Sometimes connection of simulator and DRL code is disconnected
+- Simulator is developer version, sometimes error message can be appeared, so please close the console
+- Simulator is window version. After some major problems are solved, I will make Mac and Linux version. 
