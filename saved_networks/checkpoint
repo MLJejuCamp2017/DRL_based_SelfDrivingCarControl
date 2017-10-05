@@ -1,2 +1,2 @@
-model_checkpoint_path: "Qarsim"
-all_model_checkpoint_paths: "Qarsim"
+model_checkpoint_path: "Qarsim_DQN"
+all_model_checkpoint_paths: "Qarsim_DQN"

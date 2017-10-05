@@ -10,6 +10,8 @@
 
 #### Issues
 
+- Major Issue!
+  - It has Null error. The game doesn't stop but I will try to remove it. 
 - Text position changes depending on resolution
 - Linux and Mac version of the simulator
 - DRL algorithm is needed to be fixed!! 
