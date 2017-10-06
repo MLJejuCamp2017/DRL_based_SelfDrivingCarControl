@@ -67,8 +67,8 @@ third_conv   = [3,3,64,64]
 first_dense_img = [10*10*64, 1024]
 first_dense_map = [11*11*64, 1024]
 first_dense = [10*10*64 + 11*11*64, 512]
-second_dense = [512, 256]
-third_dense = [256, Num_action]
+second_dense_state  = [512, 1]
+second_dense_action = [512, Num_action]
 
 # Initialize weights and bias 
 def weight_variable(shape):
@@ -109,12 +109,14 @@ def assign_network_to_target():
 	update_bconv2_map = tf.assign(b_conv2_target_map, b_conv2_map)
 	update_bconv3_map = tf.assign(b_conv3_target_map, b_conv3_map)
 	
-	update_wfc1   = tf.assign(w_fc1_target, w_fc1)
-	update_wfc2   = tf.assign(w_fc2_target, w_fc2)
-	update_wfc3   = tf.assign(w_fc3_target, w_fc3)
-	update_bfc1 = tf.assign(b_fc1_target, b_fc1)
-	update_bfc2 = tf.assign(b_fc2_target, b_fc2)
-	update_bfc3 = tf.assign(b_fc3_target, b_fc3)
+	update_wfc1_1 = tf.assign(w_fc1_1_target, w_fc1_1)
+	update_wfc1_2 = tf.assign(w_fc1_2_target, w_fc1_2)
+	update_wfc2_1 = tf.assign(w_fc2_1_target, w_fc2_1)
+	update_wfc2_2 = tf.assign(w_fc2_2_target, w_fc2_2)
+	update_bfc1_1 = tf.assign(b_fc1_1_target, b_fc1_1)
+	update_bfc1_2 = tf.assign(b_fc1_2_target, b_fc1_2)
+	update_bfc2_1 = tf.assign(b_fc2_1_target, b_fc2_1)
+	update_bfc2_2 = tf.assign(b_fc2_2_target, b_fc2_2)
 
 	sess.run(update_wconv1_img)
 	sess.run(update_wconv2_img)
@@ -130,12 +132,14 @@ def assign_network_to_target():
 	sess.run(update_bconv2_map)
 	sess.run(update_bconv3_map)
 
-	sess.run(update_wfc1)
-	sess.run(update_wfc2)
-	sess.run(update_wfc3)
-	sess.run(update_bfc1)
-	sess.run(update_bfc2)
-	sess.run(update_bfc3)
+	sess.run(update_wfc1_1)
+	sess.run(update_wfc1_2)
+	sess.run(update_wfc2_1)
+	sess.run(update_wfc2_2)
+	sess.run(update_bfc1_1)
+	sess.run(update_bfc1_2)
+	sess.run(update_bfc2_1)
+	sess.run(update_bfc2_2)
 
 # Input 
 x_img = tf.placeholder(tf.float32, shape = [None, img_size, img_size, 2 * Num_colorChannel * Num_stackFrame])
@@ -155,14 +159,17 @@ w_conv3_img = weight_variable(third_conv)
 b_conv3_img = bias_variable([third_conv[3]])
 
 # Densely connect layer variables 
-w_fc1 = weight_variable(first_dense)
-b_fc1 = bias_variable([first_dense[1]])
+w_fc1_1 = weight_variable(first_dense)
+b_fc1_1 = bias_variable([first_dense[1]])
 
-w_fc2 = weight_variable(second_dense)
-b_fc2 = bias_variable([second_dense[1]])
+w_fc1_2 = weight_variable(first_dense)
+b_fc1_2 = bias_variable([first_dense[1]])
 
-w_fc3 = weight_variable(third_dense)
-b_fc3 = bias_variable([third_dense[1]])
+w_fc2_1 = weight_variable(second_dense_state)
+b_fc2_1 = bias_variable([second_dense_state[1]])
+
+w_fc2_2 = weight_variable(second_dense_action)
+b_fc2_2 = bias_variable([second_dense_action[1]])
 
 # Network
 h_conv1_img = tf.nn.relu(conv2d(x_img, w_conv1_img, 4) + b_conv1_img)
@@ -191,10 +198,15 @@ h_pool3_flat_map = tf.reshape(h_conv3_map, [-1, first_dense_map[0]])
 
 h_flat = tf.concat([h_pool3_flat_img, h_pool3_flat_map], 1)
 
-h_fc1 = tf.nn.relu(tf.matmul(h_flat, w_fc1)+b_fc1)
-h_fc2 = tf.nn.relu(tf.matmul(h_fc1, w_fc2)+b_fc2)
+h_fc1_state  = tf.nn.relu(tf.matmul(h_flat, w_fc1_1)+b_fc1_1)
+h_fc1_action = tf.nn.relu(tf.matmul(h_flat, w_fc1_2)+b_fc1_2)
 
-output = tf.matmul(h_fc2, w_fc3) + b_fc3
+h_fc2_state  = tf.matmul(h_fc1_state,  w_fc2_1)+b_fc2_1
+h_fc2_action = tf.matmul(h_fc1_action, w_fc2_2)+b_fc2_2
+
+h_fc2_advantage = tf.subtract(h_fc2_action, tf.reduce_mean(h_fc2_action))
+
+output = tf.add(h_fc2_state, h_fc2_advantage)
 
 ###################################### Image Target Network ######################################
 # Convolution variables target
@@ -208,14 +220,17 @@ w_conv3_target_img = weight_variable(third_conv)
 b_conv3_target_img = bias_variable([third_conv[3]])
 
 # Densely connect layer variables target
-w_fc1_target = weight_variable(first_dense)
-b_fc1_target = bias_variable([first_dense[1]])
+w_fc1_1_target = weight_variable(first_dense)
+b_fc1_1_target = bias_variable([first_dense[1]])
 
-w_fc2_target = weight_variable(second_dense)
-b_fc2_target = bias_variable([second_dense[1]])
+w_fc1_2_target = weight_variable(first_dense)
+b_fc1_2_target = bias_variable([first_dense[1]])
 
-w_fc3_target = weight_variable(third_dense)
-b_fc3_target = bias_variable([third_dense[1]])
+w_fc2_1_target = weight_variable(second_dense_state)
+b_fc2_1_target = bias_variable([second_dense_state[1]])
+
+w_fc2_2_target = weight_variable(second_dense_action)
+b_fc2_2_target = bias_variable([second_dense_action[1]])
 
 # Target Network 
 h_conv1_target_img = tf.nn.relu(conv2d(x_img, w_conv1_target_img, 4) + b_conv1_target_img)
@@ -244,10 +259,15 @@ h_pool3_flat_target_map = tf.reshape(h_conv3_target_map, [-1, first_dense_map[0]
 
 h_flat_target = tf.concat([h_pool3_flat_img, h_pool3_flat_map], 1)
 
-h_fc1_target = tf.nn.relu(tf.matmul(h_flat_target, w_fc1_target)+b_fc1_target)
-h_fc2_target = tf.nn.relu(tf.matmul(h_fc1_target, w_fc2_target)+b_fc2_target)
+h_fc1_state_target  = tf.nn.relu(tf.matmul(h_flat_target, w_fc1_1_target)+b_fc1_1_target)
+h_fc1_action_target = tf.nn.relu(tf.matmul(h_flat_target, w_fc1_2_target)+b_fc1_2_target)
 
-output_target = tf.matmul(h_fc2_target, w_fc3_target) + b_fc3_target
+h_fc2_state_target  = tf.matmul(h_fc1_state_target,  w_fc2_1_target)+b_fc2_1_target
+h_fc2_action_target = tf.matmul(h_fc1_action_target, w_fc2_2_target)+b_fc2_2_target
+
+h_fc2_advantage_target = tf.subtract(h_fc2_action_target, tf.reduce_mean(h_fc2_action_target))
+
+output_target = tf.add(h_fc2_state_target, h_fc2_advantage_target)
 
 ###################################### Calculate Loss & Train ######################################
 # Loss function and Train 
@@ -611,7 +631,7 @@ def telemetry(sid, data):
 
         # save progress every certain steps
         if step % Num_step_save == 0:
-            saver.save(sess, './saved_networks/Qarsim_DQN')
+            saver.save(sess, './saved_networks/Qarsim_Duel_DQN')
             print('Model is saved!!!')
 
     else:
@@ -661,7 +681,7 @@ def telemetry(sid, data):
         # plt.figure(2)
         plt.xlabel('Step')
         plt.ylabel('Average Reward')
-        plt.title('Deep Q Network')
+        plt.title('Dueling Deep Q Network')
         plt.grid(True)
 
         plt.plot(np.average(reward_x), np.average(reward_y), hold = True, marker = '*', ms = 5)
