@@ -1,5 +1,4 @@
 # This is DQN code for vehicle simulator.
-# I combined techniques of Double Q network, Dueling Q network and Prioritized Experience Replay
 
 # The actions of the car
 # 5 actions: 0: no move, 1: accel, 2: decel, 3: left change, 4: right change
@@ -38,19 +37,18 @@ app = Flask(__name__)
 # DQN Parameters 
 Num_action = 5
 Gamma = 0.99
-Learning_rate = 0.00025 / 4
+Learning_rate = 0.00025/4
 
 First_epsilon = 1.0
 Final_epsilon = 0.01 
 Epsilon = First_epsilon
 
-Num_replay_memory = 10000
-Num_start_training = 5000
-Num_training = 100000
-Num_update = 9999
+Num_replay_memory = 50000
+Num_start_training = 25000
+Num_training = 500000
+Num_update = 5000
 Num_batch = 32
-#Num_test = 20000
-Num_skipFrame = 2
+Num_skipFrame = 4
 Num_stackFrame = 4
 Num_colorChannel = 1
 Num_MapChannel = 1
@@ -58,13 +56,8 @@ Num_MapChannel = 1
 img_size = 80
 map_size = 81
 
-Num_step_save = 10000
-
-# Parameters for PER
-eps = 0.01
-alpha = 0.5
-beta_init = 0.4
-beta = beta_init
+Num_step_save = 50000
+Num_step_plot = 10000
 
 # Parameters for Network
 first_conv_img = [8,8, Num_colorChannel * Num_stackFrame * 2,32]
@@ -74,9 +67,21 @@ third_conv   = [3,3,64,64]
 first_dense_img = [10*10*64, 1024]
 first_dense_map = [11*11*64, 1024]
 first_dense = [10*10*64 + 11*11*64, 512]
-second_dense = [512, 256]
-third_dense_state  = [256, 1]
-third_dense_action = [256, Num_action]
+second_dense_state  = [512, 1]
+second_dense_action = [512, Num_action]
+
+Is_train = True
+
+# If is train is false then immediately start testing 
+if Is_train == False:
+	Num_start_training = 0
+	Num_training = 0
+
+# Parameters for PER
+eps = 0.01
+alpha = 0.6
+beta_init = 0.4
+beta = beta_init
 
 # Initialize weights and bias 
 def weight_variable(shape):
@@ -100,6 +105,7 @@ def conv2d(x,w, stride):
 def max_pool_2x2(x):
 	return tf.nn.max_pool(x, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
 
+
 # Assign network variables to target networks
 def assign_network_to_target():
 	update_wconv1_img = tf.assign(w_conv1_target_img, w_conv1_img)
@@ -116,18 +122,14 @@ def assign_network_to_target():
 	update_bconv2_map = tf.assign(b_conv2_target_map, b_conv2_map)
 	update_bconv3_map = tf.assign(b_conv3_target_map, b_conv3_map)
 	
-	update_wfc1_1   = tf.assign(w_fc1_1_target, w_fc1_1)
-	update_wfc1_2   = tf.assign(w_fc1_2_target, w_fc1_2)
-	update_wfc2_1   = tf.assign(w_fc2_1_target, w_fc2_1)
-	update_wfc2_2   = tf.assign(w_fc2_2_target, w_fc2_2)
-	update_wfc3_1   = tf.assign(w_fc3_1_target, w_fc3_1)
-	update_wfc3_2   = tf.assign(w_fc3_2_target, w_fc3_2)
+	update_wfc1_1 = tf.assign(w_fc1_1_target, w_fc1_1)
+	update_wfc1_2 = tf.assign(w_fc1_2_target, w_fc1_2)
+	update_wfc2_1 = tf.assign(w_fc2_1_target, w_fc2_1)
+	update_wfc2_2 = tf.assign(w_fc2_2_target, w_fc2_2)
 	update_bfc1_1 = tf.assign(b_fc1_1_target, b_fc1_1)
 	update_bfc1_2 = tf.assign(b_fc1_2_target, b_fc1_2)
 	update_bfc2_1 = tf.assign(b_fc2_1_target, b_fc2_1)
 	update_bfc2_2 = tf.assign(b_fc2_2_target, b_fc2_2)
-	update_bfc3_1 = tf.assign(b_fc3_1_target, b_fc3_1)
-	update_bfc3_2 = tf.assign(b_fc3_2_target, b_fc3_2)
 
 	sess.run(update_wconv1_img)
 	sess.run(update_wconv2_img)
@@ -147,19 +149,17 @@ def assign_network_to_target():
 	sess.run(update_wfc1_2)
 	sess.run(update_wfc2_1)
 	sess.run(update_wfc2_2)
-	sess.run(update_wfc3_1)
-	sess.run(update_wfc3_2)
 	sess.run(update_bfc1_1)
 	sess.run(update_bfc1_2)
 	sess.run(update_bfc2_1)
 	sess.run(update_bfc2_2)
-	sess.run(update_bfc3_1)
-	sess.run(update_bfc3_2)
 
 # Input 
 x_img = tf.placeholder(tf.float32, shape = [None, img_size, img_size, 2 * Num_colorChannel * Num_stackFrame])
 x_map = tf.placeholder(tf.float32, shape = [None, map_size, map_size, Num_stackFrame])
 
+# Normalize input
+x_img = (x_img - (255.0/2)) / (255.0/2)
 ###################################### Image Network ######################################
 # Convolution variables 
 w_conv1_img = weight_variable(first_conv_img)
@@ -178,17 +178,11 @@ b_fc1_1 = bias_variable([first_dense[1]])
 w_fc1_2 = weight_variable(first_dense)
 b_fc1_2 = bias_variable([first_dense[1]])
 
-w_fc2_1 = weight_variable(second_dense)
-b_fc2_1 = bias_variable([second_dense[1]])
+w_fc2_1 = weight_variable(second_dense_state)
+b_fc2_1 = bias_variable([second_dense_state[1]])
 
-w_fc2_2 = weight_variable(second_dense)
-b_fc2_2 = bias_variable([second_dense[1]])
-
-w_fc3_1 = weight_variable(third_dense_state)
-b_fc3_1 = bias_variable([third_dense_state[1]])
-
-w_fc3_2 = weight_variable(third_dense_action)
-b_fc3_2 = bias_variable([third_dense_action[1]])
+w_fc2_2 = weight_variable(second_dense_action)
+b_fc2_2 = bias_variable([second_dense_action[1]])
 
 # Network
 h_conv1_img = tf.nn.relu(conv2d(x_img, w_conv1_img, 4) + b_conv1_img)
@@ -215,21 +209,17 @@ h_conv3_map = tf.nn.relu(conv2d(h_conv2_map, w_conv3_map, 1) + b_conv3_map)
 
 h_pool3_flat_map = tf.reshape(h_conv3_map, [-1, first_dense_map[0]])
 
-
 h_flat = tf.concat([h_pool3_flat_img, h_pool3_flat_map], 1)
 
 h_fc1_state  = tf.nn.relu(tf.matmul(h_flat, w_fc1_1)+b_fc1_1)
 h_fc1_action = tf.nn.relu(tf.matmul(h_flat, w_fc1_2)+b_fc1_2)
 
-h_fc2_state  = tf.nn.relu(tf.matmul(h_fc1_state,  w_fc2_1)+b_fc2_1)
-h_fc2_action = tf.nn.relu(tf.matmul(h_fc1_action, w_fc2_2)+b_fc2_2)
+h_fc2_state  = tf.matmul(h_fc1_state,  w_fc2_1)+b_fc2_1
+h_fc2_action = tf.matmul(h_fc1_action, w_fc2_2)+b_fc2_2
 
-h_fc3_state  = tf.matmul(h_fc2_state,  w_fc3_1) + b_fc3_1
-h_fc3_action = tf.matmul(h_fc2_action, w_fc3_2) + b_fc3_2
+h_fc2_advantage = tf.subtract(h_fc2_action, tf.reduce_mean(h_fc2_action))
 
-h_fc3_advantage = tf.subtract(h_fc3_action, tf.reduce_mean(h_fc3_action))
-
-output = tf.add(h_fc3_state, h_fc3_advantage)
+output = tf.add(h_fc2_state, h_fc2_advantage)
 
 ###################################### Image Target Network ######################################
 # Convolution variables target
@@ -249,17 +239,11 @@ b_fc1_1_target = bias_variable([first_dense[1]])
 w_fc1_2_target = weight_variable(first_dense)
 b_fc1_2_target = bias_variable([first_dense[1]])
 
-w_fc2_1_target = weight_variable(second_dense)
-b_fc2_1_target = bias_variable([second_dense[1]])
+w_fc2_1_target = weight_variable(second_dense_state)
+b_fc2_1_target = bias_variable([second_dense_state[1]])
 
-w_fc2_2_target = weight_variable(second_dense)
-b_fc2_2_target = bias_variable([second_dense[1]])
-
-w_fc3_1_target = weight_variable(third_dense_state)
-b_fc3_1_target = bias_variable([third_dense_state[1]])
-
-w_fc3_2_target = weight_variable(third_dense_action)
-b_fc3_2_target = bias_variable([third_dense_action[1]])
+w_fc2_2_target = weight_variable(second_dense_action)
+b_fc2_2_target = bias_variable([second_dense_action[1]])
 
 # Target Network 
 h_conv1_target_img = tf.nn.relu(conv2d(x_img, w_conv1_target_img, 4) + b_conv1_target_img)
@@ -291,15 +275,12 @@ h_flat_target = tf.concat([h_pool3_flat_img, h_pool3_flat_map], 1)
 h_fc1_state_target  = tf.nn.relu(tf.matmul(h_flat_target, w_fc1_1_target)+b_fc1_1_target)
 h_fc1_action_target = tf.nn.relu(tf.matmul(h_flat_target, w_fc1_2_target)+b_fc1_2_target)
 
-h_fc2_state_target  = tf.nn.relu(tf.matmul(h_fc1_state_target,  w_fc2_1_target)+b_fc2_1_target)
-h_fc2_action_target = tf.nn.relu(tf.matmul(h_fc1_action_target, w_fc2_2_target)+b_fc2_2_target)
+h_fc2_state_target  = tf.matmul(h_fc1_state_target,  w_fc2_1_target)+b_fc2_1_target
+h_fc2_action_target = tf.matmul(h_fc1_action_target, w_fc2_2_target)+b_fc2_2_target
 
-h_fc3_state_target  = tf.matmul(h_fc2_state_target,  w_fc3_1_target) + b_fc3_1_target
-h_fc3_action_target = tf.matmul(h_fc2_action_target, w_fc3_2_target) + b_fc3_2_target
+h_fc2_advantage_target = tf.subtract(h_fc2_action_target, tf.reduce_mean(h_fc2_action_target))
 
-h_fc3_advantage_target = tf.subtract(h_fc3_action_target, tf.reduce_mean(h_fc3_action_target))
-
-output_target = tf.add(h_fc3_state_target, h_fc3_advantage_target)
+output_target = tf.add(h_fc2_state_target, h_fc2_advantage_target)
 
 ###################################### Calculate Loss & Train ######################################
 # Loss function and Train 
@@ -307,19 +288,18 @@ action_target = tf.placeholder(tf.float32, shape = [None, Num_action])
 y_prediction = tf.placeholder(tf.float32, shape = [None])
 
 y_target = tf.reduce_sum(tf.multiply(output, action_target), reduction_indices = 1)
-
-################################################## Prioritized Experience Replay ############################################################
+# ################################################## PER ############################################################
 w_is = tf.placeholder(tf.float32, shape = [None])
 TD_error_tf = tf.subtract(y_prediction, y_target)
 
+# Loss = tf.reduce_mean(tf.square(y_prediction - y_target))
 Loss = tf.reduce_sum(tf.multiply(w_is, tf.square(y_prediction - y_target)))
-#############################################################################################################################################
-
+###################################################################################################################
 train_step = tf.train.AdamOptimizer(learning_rate = Learning_rate, epsilon = 1e-02).minimize(Loss)
 
 # Initialize variables
 config = tf.ConfigProto()
-config.gpu_options.allow_growth = True
+config.gpu_options.per_process_gpu_memory_fraction = 0.4
 
 sess = tf.InteractiveSession(config=config)
 init = tf.global_variables_initializer()
@@ -344,8 +324,12 @@ step = 1
 Init = 0
 state = 'Observing'
 episode = 0
-datetime_now = str(datetime.date.today()) 
-hour = str(datetime.datetime.now().hour)
+
+TD_list = np.array([])
+TD_sum = np.array([])
+
+# date - hour - minute of training time
+date_time = str(datetime.date.today()) + '_' + str(datetime.datetime.now().hour) + '_' + str(datetime.datetime.now().minute)
 
 observation_in_img = 0
 observation_in_map = 0
@@ -360,7 +344,6 @@ reward_y = []
 observation_set_img = []
 observation_set_map = []
 
-TD_list = np.array([])
 action_old = np.array([1, 0, 0, 0, 0])
 speed_old = 20
 Was_left_changing = False
@@ -371,9 +354,9 @@ Vehicle_z_old = 0
 @sio.on('telemetry')
 def telemetry(sid, data):
     global step, Replay_memory, observation_in_img, observation_in_map, Epsilon, terminal_connect, img_front_old, reward_x, reward_y, \
-            observation_set_img, observation_set_map, TD_list, action_old, speed_old, Init, Was_left_changing, Was_right_changing, Vehicle_z_old, episode
+            observation_set_img, observation_set_map, TD_list, action_old, speed_old, Init, Was_left_changing, Was_right_changing, Vehicle_z_old, episode,\
+            eps, alpha, beta, beta_init, TD_list, TD_sum
 
-    current_time = time.time()
 
     Is_right_lane_changing = float(data["Right_Changing"])
     Is_left_lane_changing = float(data["Left_Changing"])
@@ -428,7 +411,7 @@ def telemetry(sid, data):
     Lane_relX_int = np.round(Lane_relX).astype(int)
 
     for i in range(len(Lane_relX_int)):
-        Grid_map[:, 40 + Lane_relX_int[i]] = -0.5
+        Grid_map[:, 40 + Lane_relX_int[i]] = -1
 
     # Process LIDAR data 
     Lidar_data = []
@@ -447,7 +430,7 @@ def telemetry(sid, data):
     for i in range(len(Lidar_x)):
         x_coord_grid = np.round(Lidar_x[i])
         y_coord_grid = np.round(Lidar_y[i])
-        Grid_map[int(y_coord_grid + 40), int(x_coord_grid + 40)] = 0.5
+        Grid_map[int(y_coord_grid + 40), int(x_coord_grid + 40)] = 1
 
     Grid_map = np.reshape(Grid_map, (81, 81, 1))
 
@@ -463,7 +446,8 @@ def telemetry(sid, data):
         image_trans_front = cv2.cvtColor(image_trans_front, cv2.COLOR_RGB2GRAY)
         image_trans_front = np.reshape(image_trans_front, (img_size, img_size, 1))		
 
-    image_trans_front = (image_trans_front - (255./2.)) / (255./2.) 
+    #image_trans_front = (image_trans_front - (255./2.)) / (255./2.) 
+    
     # ------------------------------------------------------------------
     # The current image from the camera of the car (rear)
     imgString_rear = data["rear_image"]
@@ -478,7 +462,7 @@ def telemetry(sid, data):
         image_trans_rear = cv2.cvtColor(image_trans_rear, cv2.COLOR_RGB2GRAY)
         image_trans_rear = np.reshape(image_trans_rear, (img_size, img_size, 1))	
 
-    image_trans_rear = (image_trans_rear - (255./2.)) / (255./2.) 	
+    # image_trans_rear = (image_trans_rear - (255./2.)) / (255./2.) 	
     # ------------------------------------------------------------------
 
     # Initialization
@@ -550,13 +534,13 @@ def telemetry(sid, data):
     reward_bad = -10
 
     if action_old_index == 1:
-        reward += 0.8
+        reward += 1
     elif action_old_index == 2:
-        reward -= 0.8
+        reward -= 1
     elif action_old_index == 3:
-        reward -= 0.8
+        reward -= 1
     elif action_old_index == 4:
-        reward -= 0.8
+        reward -= 0.5
 
     # Get action with string 
     action_str = ''
@@ -621,28 +605,6 @@ def telemetry(sid, data):
         action = np.zeros([Num_action])
         action[random.randint(0, Num_action - 1)] = 1.0
 
-        ################################################## Prioritized Experience Replay ############################################################
-        # Reshape Images
-        observation_next_feed_img = np.reshape(observation_next_in_img, (1, img_size, img_size, 2 * Num_colorChannel * Num_stackFrame))
-        observation_next_feed_map = np.reshape(observation_next_in_map, (1, map_size, map_size, Num_stackFrame))
-        observation_feed_img = np.reshape(observation_in_img, (1, img_size, img_size, 2 * Num_colorChannel * Num_stackFrame))
-        observation_feed_map = np.reshape(observation_in_map, (1, map_size, map_size, Num_stackFrame))
-
-        # PER + double DQN
-        Q_list = output.eval(feed_dict = {x_img: observation_next_feed_img, x_map: observation_next_feed_map})
-        a_max = np.argmax(Q_list)
-        Q_batch = output_target.eval(feed_dict = {x_img: observation_next_feed_img, x_map: observation_next_feed_map})
-
-        if terminal == 1:
-            y = [reward]
-        else:
-            y = [reward + Gamma * Q_batch[0, a_max]]
-            
-        action_feed = np.reshape(action, (1, Num_action))
-
-        TD_error = TD_error_tf.eval(feed_dict = {action_target: action_feed, y_prediction: y, x_img: observation_feed_img, x_map: observation_feed_map})[0]
-        #############################################################################################################################################
-
     elif step <= Num_start_training + Num_training:
         state = 'Training'
 
@@ -657,36 +619,16 @@ def telemetry(sid, data):
             action[np.argmax(Q_value)] = 1
             Action_from = 'Q_network'
 
-        ################################################## Prioritized Experience Replay ############################################################
-        # Reshape images
-        observation_next_feed_img = np.reshape(observation_next_in_img, (1, img_size, img_size, 2 * Num_colorChannel * Num_stackFrame))
-        observation_next_feed_map = np.reshape(observation_next_in_map, (1, map_size, map_size, Num_stackFrame))
-        observation_feed_img = np.reshape(observation_in_img, (1, img_size, img_size, 2 * Num_colorChannel * Num_stackFrame))
-        observation_feed_map = np.reshape(observation_in_map, (1, map_size, map_size, Num_stackFrame))
-
-        # PER + double DQN
-        Q_list = output.eval(feed_dict = {x_img: observation_next_feed_img, x_map: observation_next_feed_map})
-        a_max = np.argmax(Q_list)
-        Q_batch = output_target.eval(feed_dict = {x_img: observation_next_feed_img, x_map: observation_next_feed_map})
-
-        if terminal == 1:
-            y = [reward]
-        else:
-            y = [reward + Gamma * Q_batch[0, a_max]]
-
-        action_feed = np.reshape(action, (1, Num_action))
-
-        TD_error = TD_error_tf.eval(feed_dict = {action_target: action_feed, y_prediction: y, x_img: observation_feed_img, x_map: observation_feed_map})[0]
-
+		# ################################################## PER ############################################################
         TD_normalized = TD_list / sum(TD_list)
         TD_sum = np.cumsum(TD_normalized)
 
         weight_is = np.power((Num_replay_memory * TD_normalized), - beta)
         weight_is = weight_is / np.max(weight_is)
-        #############################################################################################################################################
+        # ###################################################################################################################
 
-        ################################################## Prioritized Experience Replay ############################################################
-        # Select minibatch
+		# Select minibatch
+		################################################## PER ############################################################
         minibatch = []
         batch_index = []
         w_batch = []
@@ -696,8 +638,7 @@ def telemetry(sid, data):
             batch_index.append(TD_index)
             w_batch.append(weight_is[TD_index])
             minibatch.append(Replay_memory[TD_index])
-        
-        #############################################################################################################################################
+        ###################################################################################################################
 
         # Save the each batch data 
         observation_batch_img      = [batch[0] for batch in minibatch]
@@ -712,15 +653,18 @@ def telemetry(sid, data):
         if step % Num_update == 0:
             assign_network_to_target()
 
-        ####################################### Double Q Learning part #######################################
-        # Get Target value		
+		# Get y_prediction 
+		####################################### Double Q Learning part #######################################
         y_batch = [] 
+        # Get Q value for selecting actions
         Q_list = output.eval(feed_dict = {x_img: observation_next_batch_img, x_map: observation_next_batch_map})
         a_max = []
         for i in range(Q_list.shape[0]):
             a_max.append(np.argmax(Q_list[i]))
+
+        # Get Q vlaue for evaluation
         Q_batch = output_target.eval(feed_dict = {x_img: observation_next_batch_img, x_map: observation_next_batch_map})
-        
+
         for i in range(len(minibatch)):
             if terminal_batch[i] == True:
                 y_batch.append(reward_batch[i])
@@ -729,17 +673,20 @@ def telemetry(sid, data):
 
         ######################################################################################################
 
-        ################################################## Prioritized Experience Replay ############################################################
+		################################################## PER ############################################################
         TD_error_batch = TD_error_tf.eval(feed_dict = {action_target: action_batch, y_prediction: y_batch, x_img: observation_batch_img, x_map: observation_batch_map})
         for i_batch in range(len(batch_index)):
             TD_list[batch_index[i_batch]] = pow((abs(TD_error_batch[i_batch]) + eps), alpha)
-        ###################################################################################################################
 
-        train_step.run(feed_dict = {action_target: action_batch, y_prediction: y_batch, x_img: observation_batch_img, x_map: observation_batch_map, w_is: w_batch})
+        train_step.run(feed_dict = {action_target: action_batch, y_prediction: y_batch, x_img: observation_batch_img, x_map: observation_next_batch_map, w_is: w_batch})
+
+        # Update Beta
+        beta = beta + (1 - beta_init) / Num_training
+		###################################################################################################################
 
         # save progress every certain steps
         if step % Num_step_save == 0:
-            saver.save(sess, './saved_networks/Qarsim')
+            saver.save(sess, './saved_networks/Final_model')
             print('Model is saved!!!')
 
     else:
@@ -749,6 +696,8 @@ def telemetry(sid, data):
         action = np.zeros([Num_action])
         action[np.argmax(Q_value)] = 1
 
+        Epsilon = 0
+
     ## Saving the camera image 
     # i_front = Image.fromarray(image_array_front, mode='RGB')
     # i_front.save("./Image_front/" + str(step) + '.jpg')
@@ -757,18 +706,36 @@ def telemetry(sid, data):
     # i_rear.save("./Image_rear/" + str(step) + '.jpg')
 
     # If replay memory is more than Num_replay_memory than erase one
-    if state != 'Testing':
-        if len(Replay_memory) > Num_replay_memory:
-            del Replay_memory[0]
-            ################################################## Prioritized Experience Replay ############################################################
-            TD_list = np.delete(TD_list, 0)
-            #############################################################################################################################################
-
+    if state != 'Testing':    
+        observation_in_img = np.uint8(observation_in_img)
+        observation_in_map = np.int8(observation_in_map)
+        observation_next_in_img = np.uint8(observation_next_in_img)
+        observation_next_in_map = np.int8(observation_next_in_map)
+    
         # Save experience to the Replay memory  and TD_list
-        TD_list = np.append(TD_list, pow((abs(TD_error) + eps), alpha))
-
         Replay_memory.append([observation_in_img,observation_in_map, action_old, reward, \
                                 observation_next_in_img, observation_next_in_map, terminal])
+
+        # ################################################## PER ############################################################
+        Q_batch = output_target.eval(feed_dict = {x_img: [observation_next_in_img], x_map: [observation_next_in_map]})
+        
+        if terminal == True:
+            y = [reward]
+        else:
+            y = [reward + Gamma * np.max(Q_batch)]
+
+        TD_error = TD_error_tf.eval(feed_dict = {action_target: [action], y_prediction: y, x_img: [observation_in_img], x_map: [observation_in_map]})[0]
+        TD_list = np.append(TD_list, pow((abs(TD_error) + eps), alpha))
+        
+        # ###################################################################################################################
+
+        if len(Replay_memory) > Num_replay_memory:
+            del Replay_memory[0]
+
+            ################################################## PER ############################################################
+            TD_list = np.delete(TD_list, 0)
+            ###################################################################################################################    
+
     # Send action to Unity
     action_in = np.argmax(action)		
     send_control(action_in)
@@ -779,19 +746,15 @@ def telemetry(sid, data):
 
     # Save step and reward for plotting
     if state != 'Observing':
-        if reward != reward_bad:
-            reward_x.append(step)
-            reward_y.append(reward)
-        else:
-            reward_x.append(step)
-            reward_y.append(-10)
+        reward_x.append(step)
+        reward_y.append(reward)
 
     # Plot the average reward and step
-    if step % 1000 == 0 and state != 'Observing':
+    if step % Num_step_plot == 0 and state != 'Observing':
         # plt.figure(2)
         plt.xlabel('Step')
         plt.ylabel('Average Reward')
-        plt.title('Combined Final DQN Model')
+        plt.title('Final Model')
         plt.grid(True)
 
         plt.plot(np.average(reward_x), np.average(reward_y), hold = True, marker = '*', ms = 5)
@@ -802,7 +765,8 @@ def telemetry(sid, data):
         reward_y = []
 
     if terminal == 1:
-        episode += 1
+        if state != 'Observing':
+            episode += 1
 
     # Get current variables to old vatiables
     observation_in_img = observation_next_in_img

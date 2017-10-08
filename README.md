@@ -45,7 +45,9 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 
 
 ### Description of files
-* drive_Combined.py: This is DQN model for the simulator.
+* DQN.py: This is basic DQN model for the simulation.
+* Duel_DQN.py: Dueling architecture DQN model for the simulation.
+* Final_Model.py: The Proposed DQN model (Double + Prioritized Experience Replay + Dueling) for the simulation
 
 
 I also upload the other DQN codes which I tested with the games that I made. Check out [my DRL github repo](https://github.com/Kyushik/DRL) 
