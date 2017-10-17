@@ -1,5 +1,23 @@
 # Version Information
 
+### Version 0.4
+
+#### Fixed!
+
+- Null error problem is fixed
+- Forward control parameter is fixed
+- More DRL algorithms!
+
+#### Issues
+
+- Text position changes depending on resolution
+- Linux and Mac version of the simulator
+- Plot is not responding
+- There is no 'The end' condition
+- Sometimes heading of the vehicle is tilted
+
+---
+
 ### Version 0.3
 
 #### Fixed!

@@ -46,7 +46,7 @@ Epsilon = First_epsilon
 Num_replay_memory = 50000
 Num_start_training = 25000
 Num_training = 500000
-Num_update = 5000
+Num_update = 5000 - 1
 Num_batch = 32
 Num_skipFrame = 3
 Num_stackFrame = 4
@@ -318,6 +318,8 @@ Was_left_changing = False
 Was_right_changing = False
 
 Vehicle_z_old = 0
+
+plt.figure()
 # Communication with Unity
 @sio.on('telemetry')
 def telemetry(sid, data):
@@ -491,16 +493,16 @@ def telemetry(sid, data):
     action_old_index = np.argmax(action_old)
 
     reward = speed_vehicle / 10
-    reward_bad = - 50
+    reward_bad = - 10
 
     if action_old_index == 1:
-        reward += 0.5
+        reward += 1
     elif action_old_index == 2:
-        reward -= 0.5
+        reward -= 1
     elif action_old_index == 3:
-        reward -= 0.5
+        reward -= 1
     elif action_old_index == 4:
-        reward -= 0.5
+        reward -= 0
 
     # Get action with string 
     action_str = ''
