@@ -1,2 +1,2 @@
-model_checkpoint_path: "Final_model"
-all_model_checkpoint_paths: "Final_model"
+model_checkpoint_path: "NoisyNet_DQN"
+all_model_checkpoint_paths: "NoisyNet_DQN"
