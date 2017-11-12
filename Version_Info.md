@@ -1,5 +1,21 @@
 # Version Information
 
+### Version 0.5
+
+#### Fixed!
+
+- Mac and Linux version simulator is available!! :) 
+
+#### Issues
+
+- Text position changes depending on resolution
+- Plot is not responding
+- There is no 'The end' condition
+- Sometimes heading of the vehicle is tilted
+- Computation speed difference between exploration, training and testing
+
+---
+
 ### Version 0.4
 
 #### Fixed!
