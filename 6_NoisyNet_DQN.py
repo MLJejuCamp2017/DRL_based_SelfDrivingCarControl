@@ -525,7 +525,7 @@ def telemetry(sid, data):
         reward = reward_bad
 
         if len(Replay_memory) > 15:
-            Replay_memory[-1][3] = - reward_bad
+            # Replay_memory[-1][3] = reward_bad
 
             RM_index = list(range(-15, 0))
             RM_index.reverse()

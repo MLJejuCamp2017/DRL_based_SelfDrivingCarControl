@@ -4,7 +4,7 @@
 # 5 actions: 0: no move, 1: accel, 2: decel, 3: left change, 4: right change
 
 # Implementation
-# -> Just implement this code and implement Vehicle simulator! 
+# -> Just implement this code and implement Vehicle simulator!
 
 # Modules for unity
 import argparse
@@ -27,20 +27,20 @@ import cv2
 import random
 import numpy as np
 import copy
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import datetime
 
 # Unity connection
 sio = socketio.Server()
 app = Flask(__name__)
 
-# DQN Parameters 
+# DQN Parameters
 Num_action = 5
 Gamma = 0.99
 Learning_rate = 0.00025/4
 
 First_epsilon = 1.0
-Final_epsilon = 0.01 
+Final_epsilon = 0.01
 Epsilon = First_epsilon
 
 Num_replay_memory = 50000
@@ -72,7 +72,7 @@ second_dense_action = [512, Num_action]
 
 Is_train = True
 
-# If is train is false then immediately start testing 
+# If is train is false then immediately start testing
 if Is_train == False:
 	Num_start_training = 0
 	Num_training = 0
@@ -83,7 +83,7 @@ alpha = 0.6
 beta_init = 0.4
 beta = beta_init
 
-# Initialize weights and bias 
+# Initialize weights and bias
 def weight_variable(shape):
     return tf.Variable(xavier_initializer(shape))
 
@@ -121,7 +121,7 @@ def assign_network_to_target():
 	update_bconv1_map = tf.assign(b_conv1_target_map, b_conv1_map)
 	update_bconv2_map = tf.assign(b_conv2_target_map, b_conv2_map)
 	update_bconv3_map = tf.assign(b_conv3_target_map, b_conv3_map)
-	
+
 	update_wfc1   = tf.assign(w_fc1_target, w_fc1)
 	update_wfc2   = tf.assign(w_fc2_target, w_fc2)
 	update_wfc3   = tf.assign(w_fc3_target, w_fc3)
@@ -150,14 +150,14 @@ def assign_network_to_target():
 	sess.run(update_bfc2)
 	sess.run(update_bfc3)
 
-# Input 
+# Input
 x_img = tf.placeholder(tf.float32, shape = [None, img_size, img_size, 2 * Num_colorChannel * Num_stackFrame])
 x_map = tf.placeholder(tf.float32, shape = [None, map_size, map_size, Num_stackFrame])
 
 # Normalize input
 x_img = (x_img - (255.0/2)) / (255.0/2)
 ###################################### Image Network ######################################
-# Convolution variables 
+# Convolution variables
 w_conv1_img = weight_variable(first_conv_img)
 b_conv1_img = bias_variable([first_conv_img[3]])
 
@@ -167,7 +167,7 @@ b_conv2_img = bias_variable([second_conv[3]])
 w_conv3_img = weight_variable(third_conv)
 b_conv3_img = bias_variable([third_conv[3]])
 
-# Densely connect layer variables 
+# Densely connect layer variables
 w_fc1 = weight_variable(first_dense)
 b_fc1 = bias_variable([first_dense[1]])
 
@@ -185,7 +185,7 @@ h_conv3_img = tf.nn.relu(conv2d(h_conv2_img, w_conv3_img, 1) + b_conv3_img)
 h_pool3_flat_img = tf.reshape(h_conv3_img, [-1, first_dense_img[0]])
 
 ###################################### Map Network ######################################
-# Convolution variables 
+# Convolution variables
 w_conv1_map = weight_variable(first_conv_map)
 b_conv1_map = bias_variable([first_conv_map[3]])
 
@@ -230,7 +230,7 @@ b_fc2_target = bias_variable([second_dense[1]])
 w_fc3_target = weight_variable(third_dense)
 b_fc3_target = bias_variable([third_dense[1]])
 
-# Target Network 
+# Target Network
 h_conv1_target_img = tf.nn.relu(conv2d(x_img, w_conv1_target_img, 4) + b_conv1_target_img)
 h_conv2_target_img = tf.nn.relu(conv2d(h_conv1_target_img, w_conv2_target_img, 2) + b_conv2_target_img)
 h_conv3_target_img = tf.nn.relu(conv2d(h_conv2_target_img, w_conv3_target_img, 1) + b_conv3_target_img)
@@ -248,7 +248,7 @@ b_conv2_target_map = bias_variable([second_conv[3]])
 w_conv3_target_map = weight_variable(third_conv)
 b_conv3_target_map = bias_variable([third_conv[3]])
 
-# Target Network 
+# Target Network
 h_conv1_target_map = tf.nn.relu(conv2d(x_map, w_conv1_target_map, 4) + b_conv1_target_map)
 h_conv2_target_map = tf.nn.relu(conv2d(h_conv1_target_map, w_conv2_target_map, 2) + b_conv2_target_map)
 h_conv3_target_map = tf.nn.relu(conv2d(h_conv2_target_map, w_conv3_target_map, 1) + b_conv3_target_map)
@@ -263,7 +263,7 @@ h_fc2_target = tf.nn.relu(tf.matmul(h_fc1_target, w_fc2_target)+b_fc2_target)
 output_target = tf.matmul(h_fc2_target, w_fc3_target) + b_fc3_target
 
 ###################################### Calculate Loss & Train ######################################
-# Loss function and Train 
+# Loss function and Train
 action_target = tf.placeholder(tf.float32, shape = [None, Num_action])
 y_prediction = tf.placeholder(tf.float32, shape = [None])
 
@@ -341,14 +341,14 @@ def telemetry(sid, data):
     Is_right_lane_changing = float(data["Right_Changing"])
     Is_left_lane_changing = float(data["Left_Changing"])
 
-    Is_lane_changing = False 
+    Is_lane_changing = False
 
     if Is_right_lane_changing == 1 or Is_left_lane_changing == 1:
-        Is_lane_changing = True	
+        Is_lane_changing = True
     else:
         Is_lane_changing = False
 
-    # # Plotting Sensor data 
+    # # Plotting Sensor data
     # plt.figure(1)
     # plt.plot(Lidar_x, Lidar_y, 'r.',  markersize = 5)
     # plt.plot(0, 0, 'b*', markersize = 10)
@@ -366,7 +366,7 @@ def telemetry(sid, data):
     # plt.grid(True)
     # plt.draw()
 
-    # ## Saving plot image 
+    # ## Saving plot image
     # #plt.savefig("./savePlot/" + str(step) + ".png")
 
     # plt.pause(0.000001)
@@ -375,13 +375,13 @@ def telemetry(sid, data):
     # terminal state
     # 0: false, 1: true
 
-    # Make Gridmap 
+    # Make Gridmap
     Grid_map = np.zeros([81, 81])
 
     # Host vehicle position
     Grid_map[40, 40] = 1
 
-    # Lane on gridmap 
+    # Lane on gridmap
     Vehicle_x = float(data["Vehicle_X"])
     Vehicle_z = float(data["Vehicle_Z"])
 
@@ -393,7 +393,7 @@ def telemetry(sid, data):
     for i in range(len(Lane_relX_int)):
         Grid_map[:, 40 + Lane_relX_int[i]] = -1
 
-    # Process LIDAR data 
+    # Process LIDAR data
     Lidar_data = []
 
     for i in range(360):
@@ -424,10 +424,10 @@ def telemetry(sid, data):
 
     if Num_colorChannel == 1:
         image_trans_front = cv2.cvtColor(image_trans_front, cv2.COLOR_RGB2GRAY)
-        image_trans_front = np.reshape(image_trans_front, (img_size, img_size, 1))		
+        image_trans_front = np.reshape(image_trans_front, (img_size, img_size, 1))
 
-    #image_trans_front = (image_trans_front - (255./2.)) / (255./2.) 
-    
+    #image_trans_front = (image_trans_front - (255./2.)) / (255./2.)
+
     # ------------------------------------------------------------------
     # The current image from the camera of the car (rear)
     imgString_rear = data["rear_image"]
@@ -440,9 +440,9 @@ def telemetry(sid, data):
 
     if Num_colorChannel == 1:
         image_trans_rear = cv2.cvtColor(image_trans_rear, cv2.COLOR_RGB2GRAY)
-        image_trans_rear = np.reshape(image_trans_rear, (img_size, img_size, 1))	
+        image_trans_rear = np.reshape(image_trans_rear, (img_size, img_size, 1))
 
-    # image_trans_rear = (image_trans_rear - (255./2.)) / (255./2.) 	
+    # image_trans_rear = (image_trans_rear - (255./2.)) / (255./2.)
     # ------------------------------------------------------------------
 
     # Initialization
@@ -458,27 +458,27 @@ def telemetry(sid, data):
 
         observation_in_img = np.delete(observation_in_img, [0], axis = 2)
 
-        # Making observation set for img 
+        # Making observation set for img
         for i in range(Num_skipFrame * Num_stackFrame):
             observation_set_img.insert(0, observation_in_img[:,:,:2])
 
         observation_in_map = np.zeros([map_size, map_size, 1])
-        
+
         for i in range(Num_stackFrame):
             observation_in_map = np.insert(observation_in_map, [1], Grid_map, axis = 2)
 
         observation_in_map = np.delete(observation_in_map, [0], axis = 2)
 
-        # Making observation set for map 
+        # Making observation set for map
         for i in range(Num_skipFrame * Num_stackFrame):
             observation_set_map.insert(0, Grid_map)
-        
+
         Vehicle_z_old = Vehicle_z
 
         Init = 1
         print('Initialization is Finished!')
 
-    # Processing input data 
+    # Processing input data
     observation_next_img = np.zeros([img_size, img_size, 1])
     observation_next_img = np.insert(observation_next_img, [1], image_trans_front, axis = 2)
     observation_next_img = np.insert(observation_next_img, [1], image_trans_rear , axis = 2)
@@ -487,27 +487,27 @@ def telemetry(sid, data):
     observation_next_map = Grid_map
 
     del observation_set_img[0]
-    del observation_set_map[0] 
+    del observation_set_map[0]
     observation_set_img.append(observation_next_img)
     observation_set_map.append(observation_next_map)
 
     observation_next_in_img = np.zeros([img_size, img_size, 1])
     observation_next_in_map = np.zeros([map_size, map_size, 1])
 
-    # Stack the frame according to the number of skipping frame 	
+    # Stack the frame according to the number of skipping frame
     for stack_frame in range(Num_stackFrame):
         observation_next_in_img = np.insert(observation_next_in_img, [1], observation_set_img[-1 - (Num_skipFrame * stack_frame)], axis = 2)
         observation_next_in_map = np.insert(observation_next_in_map, [1], observation_set_map[-1 - (Num_skipFrame * stack_frame)], axis = 2)
 
     observation_next_in_img = np.delete(observation_next_in_img, [0], axis = 2)
-    observation_next_in_map = np.delete(observation_next_in_map, [0], axis = 2)	
+    observation_next_in_map = np.delete(observation_next_in_map, [0], axis = 2)
 
     # Get data from Unity
     # reward = float(data["reward"])
     action_vehicle = float(data["Action_vehicle"])
     speed_vehicle = float(data["Speed"])
 
-    # According to the last action, get reward. 
+    # According to the last action, get reward.
     action_old_index = np.argmax(action_old)
 
     reward = speed_vehicle / 10
@@ -522,7 +522,7 @@ def telemetry(sid, data):
     elif action_old_index == 4:
         reward -= 0.5
 
-    # Get action with string 
+    # Get action with string
     action_str = ''
 
     if action_old_index == 0:
@@ -542,12 +542,12 @@ def telemetry(sid, data):
     if abs(Vehicle_z - Vehicle_z_old) > 1 and Vehicle_z_old < 21:
         print('Terminal!!')
         terminal = 1
-        
+
     if terminal == 1 and step != 1:
         reward = reward_bad
 
         if len(Replay_memory) > 15:
-            Replay_memory[-1][3] = - reward_bad
+            # Replay_memory[-1][3] = reward_bad
 
             RM_index = list(range(-15, 0))
             RM_index.reverse()
@@ -620,7 +620,7 @@ def telemetry(sid, data):
             minibatch.append(Replay_memory[TD_index])
         ###################################################################################################################
 
-        # Save the each batch data 
+        # Save the each batch data
         observation_batch_img      = [batch[0] for batch in minibatch]
         observation_batch_map      = [batch[1] for batch in minibatch]
         action_batch               = [batch[2] for batch in minibatch]
@@ -629,14 +629,14 @@ def telemetry(sid, data):
         observation_next_batch_map = [batch[5] for batch in minibatch]
         terminal_batch 	           = [batch[6] for batch in minibatch]
 
-        # Update target network according to the Num_update value 
+        # Update target network according to the Num_update value
         if step % Num_update == 0:
             assign_network_to_target()
 
-        # Get Target value		
-        y_batch = [] 
+        # Get Target value
+        y_batch = []
         Q_batch = output_target.eval(feed_dict = {x_img: observation_next_batch_img, x_map: observation_next_batch_map})
-        
+
         for i in range(len(minibatch)):
             if terminal_batch[i] == True:
                 y_batch.append(reward_batch[i])
@@ -662,7 +662,7 @@ def telemetry(sid, data):
             print('Model is saved!!!')
 
     else:
-        # Testing code 
+        # Testing code
         state = 'Testing'
         Q_value = output.eval(feed_dict={x_img: [observation_in_img], x_map: [observation_in_map]})
         action = np.zeros([Num_action])
@@ -670,7 +670,7 @@ def telemetry(sid, data):
 
         Epsilon = 0
 
-    ## Saving the camera image 
+    ## Saving the camera image
     # i_front = Image.fromarray(image_array_front, mode='RGB')
     # i_front.save("./Image_front/" + str(step) + '.jpg')
 
@@ -678,19 +678,19 @@ def telemetry(sid, data):
     # i_rear.save("./Image_rear/" + str(step) + '.jpg')
 
     # If replay memory is more than Num_replay_memory than erase one
-    if state != 'Testing':    
+    if state != 'Testing':
         observation_in_img = np.uint8(observation_in_img)
         observation_in_map = np.int8(observation_in_map)
         observation_next_in_img = np.uint8(observation_next_in_img)
         observation_next_in_map = np.int8(observation_next_in_map)
-    
+
         # Save experience to the Replay memory  and TD_list
         Replay_memory.append([observation_in_img,observation_in_map, action_old, reward, \
                                 observation_next_in_img, observation_next_in_map, terminal])
 
         # ################################################## PER ############################################################
         Q_batch = output_target.eval(feed_dict = {x_img: [observation_next_in_img], x_map: [observation_next_in_map]})
-        
+
         if terminal == True:
             y = [reward]
         else:
@@ -698,7 +698,7 @@ def telemetry(sid, data):
 
         TD_error = TD_error_tf.eval(feed_dict = {action_target: [action], y_prediction: y, x_img: [observation_in_img], x_map: [observation_in_map]})[0]
         TD_list = np.append(TD_list, pow((abs(TD_error) + eps), alpha))
-        
+
         # ###################################################################################################################
 
         if len(Replay_memory) > Num_replay_memory:
@@ -706,14 +706,14 @@ def telemetry(sid, data):
 
             ################################################## PER ############################################################
             TD_list = np.delete(TD_list, 0)
-            ###################################################################################################################    
+            ###################################################################################################################
 
     # Send action to Unity
-    action_in = np.argmax(action)		
+    action_in = np.argmax(action)
     send_control(action_in)
-        
+
     # Print information
-    print('Step: ' + str(step) + '  /  ' + 'Episode: ' + str(episode) + ' / ' + 'State: ' + state + '  /  ' + 'Action: ' + action_str + '  /  ' + 
+    print('Step: ' + str(step) + '  /  ' + 'Episode: ' + str(episode) + ' / ' + 'State: ' + state + '  /  ' + 'Action: ' + action_str + '  /  ' +
           'Reward: ' + str(reward) + ' / ' + 'Epsilon: ' + str(Epsilon) + '  /  ' + 'Action from: ' + Action_from + '\n')
 
     # Save step and reward for plotting
@@ -775,7 +775,7 @@ def send_control(action):
 
 	if action == -1:
 		num_connection += 1
-	
+
 	if num_connection > 500:
 		num_connection = 0
 
