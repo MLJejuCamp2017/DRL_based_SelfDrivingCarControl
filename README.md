@@ -48,7 +48,7 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 
 ### Description of files
 * DQN.py: This is basic DQN model for the simulation.
-* Duel_DQN.py: Dueling architecture DQN model for the simulation.
+* NoisyNet_DQN.py: NoisyNet DQN model for the simulation.
 * Final_Model.py: The Proposed DQN model (Double + Prioritized Experience Replay + Dueling) for the simulation
 
 
@@ -137,11 +137,12 @@ For this project, I read papers as follows.
 4. [Dueling Network Architecture for Deep Reinforcement Learning](https://arxiv.org/abs/1511.06581)
 5. [Deep Recurrent Q-Learning for Partially Observable MDPs](https://arxiv.org/abs/1507.06527)
 6. [Deep Attention Recurrent Q-Network](https://arxiv.org/abs/1512.01693)
-7. [Playing FPS Games with Deep Reinforcement Learning](https://arxiv.org/abs/1609.05521)
 
-  I wrote the codes 1 ~ 5. I checked performance of 1 ~ 4 and still trying to check the performance of 5. Lastly, I am studying 6 and 7. As I mentioned you can find the code of those algorithms at [my DRL github](https://github.com/Kyushik/DRL). (I should write markdown of this repository...)
+   ​
 
-  Therefore, I applied algorithms 1 ~ 4 to my DRL model. The `network model` is as follows.  
+You can find the code of those algorithms at [my DRL github](https://github.com/Kyushik/DRL). (I should write markdown of this repository...)
+
+Therefore, I applied algorithms 1 ~ 4 to my DRL model. The `network model` is as follows.  
 
 <img src="./Images/Network_model.png" alt="Snesor data plotting" style="width: 700px;"/>
 
@@ -153,9 +154,9 @@ Also, I used `Prioritized Experience Replay` when I choose mini batch and I used
 
 This is graph of step - average reward (1000 steps)
 
-![Average_reward_graph](C:\Users\Q\Desktop\JejuGithub\Images\Average_reward_graph.png)
+![Average_reward_graph](./Result_Plot/Result.PNG)
 
-The average reward increases! (2.4 ~ 4.2)
+The average reward increases!
 
 
 
