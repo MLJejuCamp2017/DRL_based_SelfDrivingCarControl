@@ -1,5 +1,23 @@
 # Version Information
 
+### Version 0.6
+
+#### Fixed!
+
+- Recommended resolution = 16:9
+- Plot is replaced by `tensorboard`
+- Saving model parameter method is changed!
+- Tilted heading problem is fixed!
+- Ghost vehicle at the front in fixed!
+
+#### Issues
+
+- Text position changes depending on resolution
+- Computation speed difference between exploration, training and testing
+- Performance of algorithm needs to be improved!
+
+---
+
 ### Version 0.5
 
 #### Fixed!

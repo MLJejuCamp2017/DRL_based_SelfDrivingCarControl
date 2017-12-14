@@ -1,2 +1,2 @@
-model_checkpoint_path: "NoisyNet_DQN"
-all_model_checkpoint_paths: "NoisyNet_DQN"
+model_checkpoint_path: "2017-12-14_11_39_PDD_DQN"
+all_model_checkpoint_paths: "2017-12-14_11_39_PDD_DQN"

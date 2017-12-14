@@ -1,8 +1,10 @@
 # DRL Based Self Driving Car Control
 
-## Version 0.5
+## Version 0.6
 
 [Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
+
+**Recommended resolution = 16:9**
 
 ---
 
@@ -55,6 +57,8 @@ I also upload the other DQN codes which I tested with the games that I made. Che
 This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pptx?dl=0) of `final presentation`
 
 Also, this are the links for my Driving Simulators.
+
+**Recommended Resolution = 16:9!!**
 
 [ADAS Version](https://www.dropbox.com/s/33iscinb81n2uue/ADAS_Windows.zip?dl=0) - Windows
 

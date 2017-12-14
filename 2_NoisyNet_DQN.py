@@ -29,15 +29,18 @@ import numpy as np
 import copy
 import matplotlib.pyplot as plt
 import datetime
+import os
 
 # Unity connection
 sio = socketio.Server()
 app = Flask(__name__)
 
 # DQN Parameters
+algorithm = 'NoisyDQN'
+
 Num_action = 5
 Gamma = 0.99
-Learning_rate = 0.00025/4
+Learning_rate = 0.00025
 
 First_epsilon = 1.0
 Final_epsilon = 0.01
@@ -57,7 +60,7 @@ img_size = 80
 map_size = 81
 
 Num_step_save = 50000
-Num_step_plot = 10000
+Num_step_plot = 100
 
 # Parameters for Network
 first_conv_img = [8,8, Num_colorChannel * Num_stackFrame * 2,32]
@@ -67,21 +70,7 @@ third_conv   = [3,3,64,64]
 first_dense_img = [10*10*64, 1024]
 first_dense_map = [11*11*64, 1024]
 first_dense = [10*10*64 + 11*11*64, 512]
-second_dense_state  = [512, 1]
-second_dense_action = [512, Num_action]
-
-Is_train = True
-
-# If is train is false then immediately start testing
-if Is_train == False:
-	Num_start_training = 0
-	Num_training = 0
-
-# Parameters for PER
-eps = 0.01
-alpha = 0.6
-beta_init = 0.4
-beta = beta_init
+second_dense = [512, Num_action]
 
 # Initialize weights and bias
 def weight_variable(shape):
@@ -105,77 +94,93 @@ def conv2d(x,w, stride):
 def max_pool_2x2(x):
 	return tf.nn.max_pool(x, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
 
-
 # Assign network variables to target networks
 def assign_network_to_target():
-	update_wconv1_img = tf.assign(w_conv1_target_img, w_conv1_img)
-	update_wconv2_img = tf.assign(w_conv2_target_img, w_conv2_img)
-	update_wconv3_img = tf.assign(w_conv3_target_img, w_conv3_img)
-	update_bconv1_img = tf.assign(b_conv1_target_img, b_conv1_img)
-	update_bconv2_img = tf.assign(b_conv2_target_img, b_conv2_img)
-	update_bconv3_img = tf.assign(b_conv3_target_img, b_conv3_img)
+	# Get trainable variables
+	trainable_variables = tf.trainable_variables()
+	# network lstm variables
+	trainable_variables_network = [var for var in trainable_variables if var.name.startswith('network')]
 
-	update_wconv1_map = tf.assign(w_conv1_target_map, w_conv1_map)
-	update_wconv2_map = tf.assign(w_conv2_target_map, w_conv2_map)
-	update_wconv3_map = tf.assign(w_conv3_target_map, w_conv3_map)
-	update_bconv1_map = tf.assign(b_conv1_target_map, b_conv1_map)
-	update_bconv2_map = tf.assign(b_conv2_target_map, b_conv2_map)
-	update_bconv3_map = tf.assign(b_conv3_target_map, b_conv3_map)
+	# target lstm variables
+	trainable_variables_target = [var for var in trainable_variables if var.name.startswith('target')]
 
-	update_wfc1   = tf.assign(w_fc1_target, w_fc1)
-	update_wfc2   = tf.assign(w_fc2_target, w_fc2)
-	update_wfc3   = tf.assign(w_fc3_target, w_fc3)
-	update_bfc1 = tf.assign(b_fc1_target, b_fc1)
-	update_bfc2 = tf.assign(b_fc2_target, b_fc2)
-	update_bfc3 = tf.assign(b_fc3_target, b_fc3)
+	for i in range(len(trainable_variables_network)):
+		sess.run(tf.assign(trainable_variables_target[i], trainable_variables_network[i]))
 
-	sess.run(update_wconv1_img)
-	sess.run(update_wconv2_img)
-	sess.run(update_wconv3_img)
-	sess.run(update_bconv1_img)
-	sess.run(update_bconv2_img)
-	sess.run(update_bconv3_img)
+# Code for tensorboard
+def setup_summary():
+	episode_score     = tf.Variable(0.)
 
-	sess.run(update_wconv1_map)
-	sess.run(update_wconv2_map)
-	sess.run(update_wconv3_map)
-	sess.run(update_bconv1_map)
-	sess.run(update_bconv2_map)
-	sess.run(update_bconv3_map)
+	tf.summary.scalar('Total Reward/' + str(Num_step_plot) + ' steps', episode_score)
 
-	sess.run(update_wfc1)
-	sess.run(update_wfc2)
-	sess.run(update_wfc3)
-	sess.run(update_bfc1)
-	sess.run(update_bfc2)
-	sess.run(update_bfc3)
+	summary_vars = [episode_score]
+	summary_placeholders = [tf.placeholder(tf.float32) for _ in range(len(summary_vars))]
+	update_ops = [summary_vars[i].assign(summary_placeholders[i]) for i in range(len(summary_vars))]
+	summary_op = tf.summary.merge_all()
+	return summary_placeholders, update_ops, summary_op
+
+########################################### Noisy Network ###########################################
+def mu_variable(shape):
+    return tf.Variable(tf.random_uniform(shape, minval = -tf.sqrt(3/shape[0]), maxval = tf.sqrt(3/shape[0])))
+
+def sigma_variable(shape):
+	return tf.Variable(tf.constant(0.017, shape = shape))
+
+def noisy_dense(input_, input_shape, mu_w, sig_w, mu_b, sig_b, is_train_process):
+	eps_w = tf.cond(is_train_process, lambda: tf.random_normal(input_shape), lambda: tf.zeros(input_shape))
+	eps_b = tf.cond(is_train_process, lambda: tf.random_normal([input_shape[1]]), lambda: tf.zeros([input_shape[1]]))
+
+	w_fc = tf.add(mu_w, tf.multiply(sig_w, eps_w))
+	b_fc = tf.add(mu_b, tf.multiply(sig_b, eps_b))
+
+	return tf.matmul(input_, w_fc) + b_fc
+#####################################################################################################
 
 # Input
 x_img = tf.placeholder(tf.float32, shape = [None, img_size, img_size, 2 * Num_colorChannel * Num_stackFrame])
 x_map = tf.placeholder(tf.float32, shape = [None, map_size, map_size, Num_stackFrame])
 
+########################################### Noisy Network ###########################################
+train_process = tf.placeholder(tf.bool)
+#####################################################################################################
+
 # Normalize input
 x_img = (x_img - (255.0/2)) / (255.0/2)
-###################################### Image Network ######################################
-# Convolution variables
-w_conv1_img = weight_variable(first_conv_img)
-b_conv1_img = bias_variable([first_conv_img[3]])
 
-w_conv2_img = weight_variable(second_conv)
-b_conv2_img = bias_variable([second_conv[3]])
+with tf.variable_scope('network'):
+    ###################################### Image Network ######################################
+    # Convolution variables (img)
+    w_conv1_img = weight_variable(first_conv_img)
+    b_conv1_img = bias_variable([first_conv_img[3]])
 
-w_conv3_img = weight_variable(third_conv)
-b_conv3_img = bias_variable([third_conv[3]])
+    w_conv2_img = weight_variable(second_conv)
+    b_conv2_img = bias_variable([second_conv[3]])
 
-# Densely connect layer variables
-w_fc1 = weight_variable(first_dense)
-b_fc1 = bias_variable([first_dense[1]])
+    w_conv3_img = weight_variable(third_conv)
+    b_conv3_img = bias_variable([third_conv[3]])
 
-w_fc2 = weight_variable(second_dense)
-b_fc2 = bias_variable([second_dense[1]])
+    # Convolution variables (map)
+    w_conv1_map = weight_variable(first_conv_map)
+    b_conv1_map = bias_variable([first_conv_map[3]])
 
-w_fc3 = weight_variable(third_dense)
-b_fc3 = bias_variable([third_dense[1]])
+    w_conv2_map = weight_variable(second_conv)
+    b_conv2_map = bias_variable([second_conv[3]])
+
+    w_conv3_map = weight_variable(third_conv)
+    b_conv3_map = bias_variable([third_conv[3]])
+
+    ########################################### Noisy Network ###########################################
+    # Densely connect layer variables (Noisy)
+    mu_w1  = mu_variable(first_dense)
+    sig_w1 = sigma_variable(first_dense)
+    mu_b1  = mu_variable([first_dense[1]])
+    sig_b1 = sigma_variable([first_dense[1]])
+
+    mu_w2  = mu_variable(second_dense)
+    sig_w2 = sigma_variable(second_dense)
+    mu_b2  = mu_variable([second_dense[1]])
+    sig_b2 = sigma_variable([second_dense[1]])
+    #####################################################################################################
 
 # Network
 h_conv1_img = tf.nn.relu(conv2d(x_img, w_conv1_img, 4) + b_conv1_img)
@@ -185,15 +190,6 @@ h_conv3_img = tf.nn.relu(conv2d(h_conv2_img, w_conv3_img, 1) + b_conv3_img)
 h_pool3_flat_img = tf.reshape(h_conv3_img, [-1, first_dense_img[0]])
 
 ###################################### Map Network ######################################
-# Convolution variables
-w_conv1_map = weight_variable(first_conv_map)
-b_conv1_map = bias_variable([first_conv_map[3]])
-
-w_conv2_map = weight_variable(second_conv)
-b_conv2_map = bias_variable([second_conv[3]])
-
-w_conv3_map = weight_variable(third_conv)
-b_conv3_map = bias_variable([third_conv[3]])
 
 # Network
 h_conv1_map = tf.nn.relu(conv2d(x_map, w_conv1_map, 4) + b_conv1_map)
@@ -204,31 +200,45 @@ h_pool3_flat_map = tf.reshape(h_conv3_map, [-1, first_dense_map[0]])
 
 h_flat = tf.concat([h_pool3_flat_img, h_pool3_flat_map], 1)
 
-h_fc1 = tf.nn.relu(tf.matmul(h_flat, w_fc1)+b_fc1)
-h_fc2 = tf.nn.relu(tf.matmul(h_fc1, w_fc2)+b_fc2)
+########################################### Noisy Network ###########################################
+h_fc1 = tf.nn.relu(noisy_dense(h_flat, first_dense, mu_w1, sig_w1, mu_b1, sig_b1, train_process))
+output = noisy_dense(h_fc1, second_dense, mu_w2, sig_w2, mu_b2, sig_b2, train_process)
+#####################################################################################################
 
-output = tf.matmul(h_fc2, w_fc3) + b_fc3
+with tf.variable_scope('target'):
+    ###################################### Image Target Network ######################################
+    # Convolution variables target (img)
+    w_conv1_target_img = weight_variable(first_conv_img)
+    b_conv1_target_img = bias_variable([first_conv_img[3]])
 
-###################################### Image Target Network ######################################
-# Convolution variables target
-w_conv1_target_img = weight_variable(first_conv_img)
-b_conv1_target_img = bias_variable([first_conv_img[3]])
+    w_conv2_target_img = weight_variable(second_conv)
+    b_conv2_target_img = bias_variable([second_conv[3]])
 
-w_conv2_target_img = weight_variable(second_conv)
-b_conv2_target_img = bias_variable([second_conv[3]])
+    w_conv3_target_img = weight_variable(third_conv)
+    b_conv3_target_img = bias_variable([third_conv[3]])
 
-w_conv3_target_img = weight_variable(third_conv)
-b_conv3_target_img = bias_variable([third_conv[3]])
+    # Convolution variables target (map)
+    w_conv1_target_map = weight_variable(first_conv_map)
+    b_conv1_target_map = bias_variable([first_conv_map[3]])
 
-# Densely connect layer variables target
-w_fc1_target = weight_variable(first_dense)
-b_fc1_target = bias_variable([first_dense[1]])
+    w_conv2_target_map = weight_variable(second_conv)
+    b_conv2_target_map = bias_variable([second_conv[3]])
 
-w_fc2_target = weight_variable(second_dense)
-b_fc2_target = bias_variable([second_dense[1]])
+    w_conv3_target_map = weight_variable(third_conv)
+    b_conv3_target_map = bias_variable([third_conv[3]])
 
-w_fc3_target = weight_variable(third_dense)
-b_fc3_target = bias_variable([third_dense[1]])
+    ########################################### Noisy Network ###########################################
+    # Densely connect layer variables target (Noisy)
+    mu_w1_target  = mu_variable(first_dense)
+    sig_w1_target = sigma_variable(first_dense)
+    mu_b1_target  = mu_variable([first_dense[1]])
+    sig_b1_target = sigma_variable([first_dense[1]])
+
+    mu_w2_target  = mu_variable(second_dense)
+    sig_w2_target = sigma_variable(second_dense)
+    mu_b2_target  = mu_variable([second_dense[1]])
+    sig_b2_target = sigma_variable([second_dense[1]])
+    #####################################################################################################
 
 # Target Network
 h_conv1_target_img = tf.nn.relu(conv2d(x_img, w_conv1_target_img, 4) + b_conv1_target_img)
@@ -238,15 +248,6 @@ h_conv3_target_img = tf.nn.relu(conv2d(h_conv2_target_img, w_conv3_target_img, 1
 h_pool3_flat_target_img = tf.reshape(h_conv3_target_img, [-1, first_dense_img[0]])
 
 ###################################### Map Target Network ######################################
-# Convolution variables target
-w_conv1_target_map = weight_variable(first_conv_map)
-b_conv1_target_map = bias_variable([first_conv_map[3]])
-
-w_conv2_target_map = weight_variable(second_conv)
-b_conv2_target_map = bias_variable([second_conv[3]])
-
-w_conv3_target_map = weight_variable(third_conv)
-b_conv3_target_map = bias_variable([third_conv[3]])
 
 # Target Network
 h_conv1_target_map = tf.nn.relu(conv2d(x_map, w_conv1_target_map, 4) + b_conv1_target_map)
@@ -257,10 +258,10 @@ h_pool3_flat_target_map = tf.reshape(h_conv3_target_map, [-1, first_dense_map[0]
 
 h_flat_target = tf.concat([h_pool3_flat_img, h_pool3_flat_map], 1)
 
-h_fc1_target = tf.nn.relu(tf.matmul(h_flat_target, w_fc1_target)+b_fc1_target)
-h_fc2_target = tf.nn.relu(tf.matmul(h_fc1_target, w_fc2_target)+b_fc2_target)
-
-output_target = tf.matmul(h_fc2_target, w_fc3_target) + b_fc3_target
+########################################### Noisy Network ###########################################
+h_fc1_target = tf.nn.relu(noisy_dense(h_flat_target, first_dense, mu_w1_target, sig_w1_target, mu_b1_target, sig_b1_target, train_process))
+output_target = noisy_dense(h_fc1_target, second_dense, mu_w2_target, sig_w2_target, mu_b2_target, sig_b2_target, train_process)
+#####################################################################################################
 
 ###################################### Calculate Loss & Train ######################################
 # Loss function and Train
@@ -268,13 +269,7 @@ action_target = tf.placeholder(tf.float32, shape = [None, Num_action])
 y_prediction = tf.placeholder(tf.float32, shape = [None])
 
 y_target = tf.reduce_sum(tf.multiply(output, action_target), reduction_indices = 1)
-# ################################################## PER ############################################################
-w_is = tf.placeholder(tf.float32, shape = [None])
-TD_error_tf = tf.subtract(y_prediction, y_target)
-
-# Loss = tf.reduce_mean(tf.square(y_prediction - y_target))
-Loss = tf.reduce_sum(tf.multiply(w_is, tf.square(y_prediction - y_target)))
-###################################################################################################################
+Loss = tf.reduce_mean(tf.square(y_prediction - y_target))
 train_step = tf.train.AdamOptimizer(learning_rate = Learning_rate, epsilon = 1e-02).minimize(Loss)
 
 # Initialize variables
@@ -282,6 +277,17 @@ config = tf.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.4
 
 sess = tf.InteractiveSession(config=config)
+
+# date - hour - minute of training time
+date_time = str(datetime.date.today()) + '_' + str(datetime.datetime.now().hour) + '_' + str(datetime.datetime.now().minute)
+
+# Make folder for save data
+os.makedirs('saved_networks/' + date_time)
+
+# Summary for tensorboard
+summary_placeholders, update_ops, summary_op = setup_summary()
+summary_writer = tf.summary.FileWriter('saved_networks/' + date_time, sess.graph)
+
 init = tf.global_variables_initializer()
 sess.run(init)
 
@@ -291,7 +297,7 @@ saver = tf.train.Saver()
 check_save = input('Is there any saved data?(1=y/2=n): ')
 
 if check_save == 1:
-    checkpoint = tf.train.get_checkpoint_state("./saved_networks")
+    checkpoint = tf.train.get_checkpoint_state('saved_networks/' + date_time)
     if checkpoint and checkpoint.model_checkpoint_path:
         saver.restore(sess, checkpoint.model_checkpoint_path)
         print("Successfully loaded:", checkpoint.model_checkpoint_path)
@@ -304,12 +310,7 @@ step = 1
 Init = 0
 state = 'Observing'
 episode = 0
-
-TD_list = np.array([])
-TD_sum = np.array([])
-
-# date - hour - minute of training time
-date_time = str(datetime.date.today()) + '_' + str(datetime.datetime.now().hour) + '_' + str(datetime.datetime.now().minute)
+score = 0
 
 observation_in_img = 0
 observation_in_map = 0
@@ -334,9 +335,10 @@ Vehicle_z_old = 0
 @sio.on('telemetry')
 def telemetry(sid, data):
     global step, Replay_memory, observation_in_img, observation_in_map, Epsilon, terminal_connect, img_front_old, reward_x, reward_y, \
-            observation_set_img, observation_set_map, TD_list, action_old, speed_old, Init, Was_left_changing, Was_right_changing, Vehicle_z_old, episode,\
-            eps, alpha, beta, beta_init, TD_list, TD_sum
+            observation_set_img, observation_set_map, TD_list, action_old, speed_old, Init, Was_left_changing, Was_right_changing, Vehicle_z_old, \
+            episode, score
 
+    current_time = time.time()
 
     Is_right_lane_changing = float(data["Right_Changing"])
     Is_left_lane_changing = float(data["Left_Changing"])
@@ -588,37 +590,15 @@ def telemetry(sid, data):
     elif step <= Num_start_training + Num_training:
         state = 'Training'
 
-        # Get action
-        if random.random() < Epsilon:
-            action = np.zeros([Num_action])
-            action[random.randint(0, Num_action - 1)] = 1.0
-            Action_from = 'Random'
-        else:
-            Q_value = output.eval(feed_dict={x_img: [observation_in_img], x_map: [observation_in_map]})
-            action = np.zeros([Num_action])
-            action[np.argmax(Q_value)] = 1
-            Action_from = 'Q_network'
+    	########################################### Noisy Network ###########################################
+    	# Select action with max Q from Noisy network
+        Q_value = output.eval(feed_dict={x_img: [observation_in_img], x_map: [observation_in_map], train_process: True})
+        action = np.zeros([Num_action])
+        action[np.argmax(Q_value)] = 1
+        #####################################################################################################
 
-		# ################################################## PER ############################################################
-        TD_normalized = TD_list / sum(TD_list)
-        TD_sum = np.cumsum(TD_normalized)
-
-        weight_is = np.power((Num_replay_memory * TD_normalized), - beta)
-        weight_is = weight_is / np.max(weight_is)
-        # ###################################################################################################################
-
-		# Select minibatch
-		################################################## PER ############################################################
-        minibatch = []
-        batch_index = []
-        w_batch = []
-        for i in range(Num_batch):
-            rand_batch = random.random()
-            TD_index = np.nonzero(TD_sum >= rand_batch)[0][0]
-            batch_index.append(TD_index)
-            w_batch.append(weight_is[TD_index])
-            minibatch.append(Replay_memory[TD_index])
-        ###################################################################################################################
+        # Select minibatch
+        minibatch =  random.sample(Replay_memory, Num_batch)
 
         # Save the each batch data
         observation_batch_img      = [batch[0] for batch in minibatch]
@@ -635,7 +615,7 @@ def telemetry(sid, data):
 
         # Get Target value
         y_batch = []
-        Q_batch = output_target.eval(feed_dict = {x_img: observation_next_batch_img, x_map: observation_next_batch_map})
+        Q_batch = output_target.eval(feed_dict = {x_img: observation_next_batch_img, x_map: observation_next_batch_map, train_process: True})
 
         for i in range(len(minibatch)):
             if terminal_batch[i] == True:
@@ -643,28 +623,17 @@ def telemetry(sid, data):
             else:
                 y_batch.append(reward_batch[i] + Gamma * np.max(Q_batch[i]))
 
-        train_step.run(feed_dict = {action_target: action_batch, y_prediction: y_batch, x_img: observation_batch_img, x_map: observation_batch_map})
-
-		################################################## PER ############################################################
-        TD_error_batch = TD_error_tf.eval(feed_dict = {action_target: action_batch, y_prediction: y_batch, x_img: observation_batch_img, x_map: observation_batch_map})
-        for i_batch in range(len(batch_index)):
-            TD_list[batch_index[i_batch]] = pow((abs(TD_error_batch[i_batch]) + eps), alpha)
-
-        train_step.run(feed_dict = {action_target: action_batch, y_prediction: y_batch, x_img: observation_batch_img, x_map: observation_next_batch_map, w_is: w_batch})
-
-        # Update Beta
-        beta = beta + (1 - beta_init) / Num_training
-		###################################################################################################################
+        train_step.run(feed_dict = {action_target: action_batch, y_prediction: y_batch, x_img: observation_batch_img, x_map: observation_batch_map, train_process: True})
 
         # save progress every certain steps
         if step % Num_step_save == 0:
-            saver.save(sess, './saved_networks/PER')
+            saver.save(sess, 'saved_networks/' + date_time + '/' + algorithm)
             print('Model is saved!!!')
 
     else:
         # Testing code
         state = 'Testing'
-        Q_value = output.eval(feed_dict={x_img: [observation_in_img], x_map: [observation_in_map]})
+        Q_value = output.eval(feed_dict={x_img: [observation_in_img], x_map: [observation_in_map], train_process: False})
         action = np.zeros([Num_action])
         action[np.argmax(Q_value)] = 1
 
@@ -679,6 +648,9 @@ def telemetry(sid, data):
 
     # If replay memory is more than Num_replay_memory than erase one
     if state != 'Testing':
+        if len(Replay_memory) > Num_replay_memory:
+            del Replay_memory[0]
+
         observation_in_img = np.uint8(observation_in_img)
         observation_in_map = np.int8(observation_in_map)
         observation_next_in_img = np.uint8(observation_next_in_img)
@@ -687,54 +659,24 @@ def telemetry(sid, data):
         # Save experience to the Replay memory  and TD_list
         Replay_memory.append([observation_in_img,observation_in_map, action_old, reward, \
                                 observation_next_in_img, observation_next_in_map, terminal])
-
-        # ################################################## PER ############################################################
-        Q_batch = output_target.eval(feed_dict = {x_img: [observation_next_in_img], x_map: [observation_next_in_map]})
-
-        if terminal == True:
-            y = [reward]
-        else:
-            y = [reward + Gamma * np.max(Q_batch)]
-
-        TD_error = TD_error_tf.eval(feed_dict = {action_target: [action], y_prediction: y, x_img: [observation_in_img], x_map: [observation_in_map]})[0]
-        TD_list = np.append(TD_list, pow((abs(TD_error) + eps), alpha))
-
-        # ###################################################################################################################
-
-        if len(Replay_memory) > Num_replay_memory:
-            del Replay_memory[0]
-
-            ################################################## PER ############################################################
-            TD_list = np.delete(TD_list, 0)
-            ###################################################################################################################
-
     # Send action to Unity
     action_in = np.argmax(action)
     send_control(action_in)
 
+    if state != 'Observing':
+    	score += reward
+
+    	if step % Num_step_plot == 0 and step != Num_start_training:
+    		tensorboard_info = [score / Num_step_plot]
+    		for i in range(len(tensorboard_info)):
+    			sess.run(update_ops[i], feed_dict = {summary_placeholders[i]: float(tensorboard_info[i])})
+    		summary_str = sess.run(summary_op)
+    		summary_writer.add_summary(summary_str, step)
+    		score = 0
+
     # Print information
     print('Step: ' + str(step) + '  /  ' + 'Episode: ' + str(episode) + ' / ' + 'State: ' + state + '  /  ' + 'Action: ' + action_str + '  /  ' +
-          'Reward: ' + str(reward) + ' / ' + 'Epsilon: ' + str(Epsilon) + '  /  ' + 'Action from: ' + Action_from + '\n')
-
-    # Save step and reward for plotting
-    if state != 'Observing':
-        reward_x.append(step)
-        reward_y.append(reward)
-
-    # Plot the average reward and step
-    if step % Num_step_plot == 0 and state != 'Observing':
-        # plt.figure(2)
-        plt.xlabel('Step')
-        plt.ylabel('Average Reward')
-        plt.title('Prioritized Experience Replay')
-        plt.grid(True)
-
-        plt.plot(np.average(reward_x), np.average(reward_y), hold = True, marker = '*', ms = 5)
-        plt.draw()
-        plt.pause(0.001)
-
-        reward_x = []
-        reward_y = []
+          'Reward: ' + str(reward) + ' / ' + 'Action from: ' + Action_from + '\n')
 
     if terminal == 1:
         if state != 'Observing':
