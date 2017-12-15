@@ -15,6 +15,7 @@
 - Text position changes depending on resolution
 - Computation speed difference between exploration, training and testing
 - Performance of algorithm needs to be improved!
+- Left and Right warning during lane change
 
 ---
 
