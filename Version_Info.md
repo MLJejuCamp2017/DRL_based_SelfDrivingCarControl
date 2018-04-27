@@ -1,5 +1,27 @@
 # Version Information
 
+### Version 0.7
+
+####Major Update!!
+
+Simulator is changed to Unity ML agents!!
+
+#### Fixed!
+
+- Resolution problem is fixed
+- Sensor problem is fixed
+- Training is much more stable. 
+- Computation speed problem is fixed -> updated by a step
+
+#### Issues
+
+- Performance of algorithm needs to be improved!
+- Front distance text should be 0, if there is no front vehicle
+- Collision sometimes happens
+- Reward should be adjusted 
+
+---
+
 ### Version 0.6
 
 #### Fixed!

@@ -1,10 +1,8 @@
 # DRL Based Self Driving Car Control
 
-## Version 0.6
+## Version 0.7
 
 [Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
-
-**Recommended resolution = 16:9**
 
 ---
 
@@ -14,7 +12,7 @@ This repository is for `Deep Reinforcement Learning Based Self Driving Car Contr
 
 There are 2 main goals for this project.
 
-* Making vehicle simulator with Unity.
+* Making vehicle simulator with [Unity ML-Agents](https://unity3d.com/kr/machine-learning).
 * Control self driving car in the simulator with some safety systems.
 
   As a self driving car engineer, I used lots of `vehicle sensors`(e.g. RADAR, LIDAR, ...) to perceive environments around host vehicle. Also, There are a lot of `Advanced Driver Assistant Systems (ADAS)` which are already commercialized. I wanted to combine these things with my deep reinforcement learning algorithms to control self driving car.
@@ -33,12 +31,12 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 * Windows7 (64bit)
 * Python 3.5.2
 * Anaconda 4.2.0
-* Tensorflow 1.0.1
+* Tensorflow 1.3.0
 
 **Hardware**
 * CPU: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHZ
 
-* GPU: GeForce GTX 1080
+* GPU: GeForce GTX 1080 Ti
 
 * Memory: 8GB
 
@@ -47,32 +45,22 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 
 
 ### Description of files
-* DQN.py: This is basic DQN model for the simulation.
-* NoisyNet_DQN.py: NoisyNet DQN model for the simulation.
-* Final_Model.py: The Proposed DQN model (Double + Prioritized Experience Replay + Dueling) for the simulation
+* Dueling_Image.ipynb: Dueling network using only image of vehicle.
+* Dueling_sensor.ipynb: Dueling network using only sensor data of vehicle.
+* Dueling_image_sensor.ipynb: Dueling network using both image and sensor of vehicle
 
 
 I also upload the other DQN codes which I tested with the games that I made. Check out [my DRL github repo](https://github.com/Kyushik/DRL) 
 
 This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pptx?dl=0) of `final presentation`
 
-Also, this are the links for my Driving Simulators.
-
-**Recommended Resolution = 16:9!!**
-
-[ADAS Version](https://www.dropbox.com/s/33iscinb81n2uue/ADAS_Windows.zip?dl=0) - Windows
-
-[ADAS Version](https://www.dropbox.com/s/fmdld7sjw9epxot/ADAS_mac.zip?dl=0) - Mac
-
-[ADAS Version](https://www.dropbox.com/s/38yb77sc56xusen/ADAS_linux.zip?dl=0) - Linux
 
 
+Also, this are the links for my Driving Simulators. (Windows only for now)
 
-[No ADAS Version](https://www.dropbox.com/s/kfc7a45jcte1ozp/NoADAS_Windows.zip?dl=0) - Windows
+[Simulator](https://www.dropbox.com/s/7xti37jv3d28u1z/environment_windows.zip?dl=0) - Windows
 
-[No ADAS Version](https://www.dropbox.com/s/1f2v6pqgjhyp8b7/NoADAS_mac.zip?dl=0) - Mac
-
-[No ADAS Version](https://www.dropbox.com/s/tfry7v227y1kw85/NoADAS_linux.zip?dl=0) - Linux
+Unzip the simulator into the `environment` folder.
 
 
 
@@ -86,17 +74,15 @@ Specific explanation of my simulator and model is as follows.
 
   I made this simulator to test my DRL algorithms. Also, to test my algorithms, I need `sensor data` and `Camera images` as inputs, but there was no driving simulators which provides both sensor data and camera images. Therefore, I tried to make one by myself. 
 
-​  The simulator is made by [Unity](https://unity3d.com/) which is widely used for making games. There were so many errors which I had to fix for making this simulator. :weary: It still has some minor issues and one major issue. The major issue is that sometimes connection between DRL code and simulator is disconnected. I am not sure about the reason, but I will keep fixing those errors.  
-
-  Deep reinforcement learning code is made by `Python`, I connected this code and unity game by `SocketIO`.  For using SocketIO, I referred to the unity project of [Driving simulator (Udacity)](https://github.com/udacity/self-driving-car-sim).  
+  The simulator is made by [Unity ML-agents](https://unity3d.com/kr/machine-learning) 
 
 
 
-As, I mentioned simulator provides 3 inputs to DRL algorithm. `Forward camera`, `Backward camera`, `Sensor data`. The example of those inputs are as follows. 
+As, I mentioned simulator provides 2 inputs to DRL algorithm. `Forward camera`, `Sensor data`. The example of those inputs are as follows. 
 
-|            Front Camera Image            |            Rear Camera Image             |           Sensor data Plotting           |
-| :--------------------------------------: | :--------------------------------------: | :--------------------------------------: |
-| <img src="./Images/Front.gif" alt="Snesor data plotting" style="width: 300px;"/> | <img src="./Images/Rear.gif" alt="Snesor data plotting" style="width: 300px;"/> | <img src="./Images/Sensor.gif" alt="Snesor data plotting" style="width: 300px;"/> |
+|                      Front Camera Image                      |                     Sensor data Plotting                     |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| <img src="./Images/Front.gif" alt="Snesor data plotting" style="width: 300px;"/> | <img src="./Images/Sensor.gif" alt="Snesor data plotting" style="width: 300px;"/> |
 
 
 
@@ -146,19 +132,9 @@ Therefore, I applied algorithms 1 ~ 4 to my DRL model. The `network model` is as
 
 <img src="./Images/Network_model.png" alt="Snesor data plotting" style="width: 700px;"/>
 
-Also, I used `Prioritized Experience Replay` when I choose mini batch and I used `Double Q Learning` technique when I calculate target value.
-
 ---
 
 ## Result 
-
-This is graph of step - average reward (1000 steps)
-
-![Average_reward_graph](./Result_Plot/Result.PNG)
-
-The average reward increases!
-
-
 
 #### Before Training 
 
