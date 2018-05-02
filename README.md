@@ -8,6 +8,12 @@
 
 ## Introduction
 
+Paper of this Project is accepted to Intelligent Vehicle Symposium 2018!! :smile: 
+
+![V201](C:\Users\Q\Desktop\JejuGithub\Images\IV2018.PNG)
+
+
+
 This repository is for `Deep Reinforcement Learning Based Self Driving Car Control` project in [ML Jeju Camp 2017](http://mlcampjeju.com/)
 
 There are 2 main goals for this project.
