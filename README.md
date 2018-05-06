@@ -144,13 +144,13 @@ Therefore, I applied algorithms 1 ~ 4 to my DRL model. The `network model` is as
 
 #### Before Training 
 
-<img src="./Images/BeforeTraining.gif" alt="Result(Before Learning)" style="width: 600px;"/>
+<img src="./Images/BeforeTraining.gif" alt="Result(Before Learning)" style="width: 480px;"/>
 
 
 
 #### After Training
 
-<img src="./Images/AfterTraining.gif" alt="Result(After Learning)" style="width: 600px;"/>
+<img src="./Images/After_training.gif" alt="Result(After Learning)" style="width: 480px;"/>
 
 
 
