@@ -68,7 +68,7 @@ Also, this are the links for my Driving Simulators. (Windows only for now)
 
 [Simulator](https://www.dropbox.com/s/eurh69orthwx2hv/environment_mac.zip?dl=0) - Mac
 
-[Simulator](https://www.dropbox.com/s/7xti37jv3d28u1z/environment_windows.zip?dl=0) - Linux
+[Simulator](https://www.dropbox.com/s/lehnq7e1zm8r6rg/environment_linux.zip?dl=0) - Linux
 
 Unzip the simulator into the `environment` folder.
 
