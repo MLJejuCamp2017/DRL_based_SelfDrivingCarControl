@@ -1,5 +1,18 @@
 # Version Information
 
+### Version 0.8
+
+#### Fixed!
+
+- Linux and Mac versions are published
+- Front distance problem is fixed
+
+#### Issues
+
+- Performance of algorithm needs to be improved! 
+
+---
+
 ### Version 0.7
 
 ####Major Update!!

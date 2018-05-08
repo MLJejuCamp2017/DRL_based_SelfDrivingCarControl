@@ -1,6 +1,6 @@
 # DRL Based Self Driving Car Control
 
-## Version 0.7
+## Version 0.8
 
 [Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
 
@@ -65,6 +65,10 @@ This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pp
 Also, this are the links for my Driving Simulators. (Windows only for now)
 
 [Simulator](https://www.dropbox.com/s/7xti37jv3d28u1z/environment_windows.zip?dl=0) - Windows
+
+[Simulator](https://www.dropbox.com/s/eurh69orthwx2hv/environment_mac.zip?dl=0) - Mac
+
+[Simulator](https://www.dropbox.com/s/7xti37jv3d28u1z/environment_windows.zip?dl=0) - Linux
 
 Unzip the simulator into the `environment` folder.
 
