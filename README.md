@@ -49,6 +49,14 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
   ​
 
 
+### How to Run this Project
+
+1. download the github repo
+2. download the simulator and put all the files into the environment folder
+3. open the ipynb file in the RL_algorithm folder and run it!
+
+
+
 
 ### Description of files
 * Dueling_Image.ipynb: Dueling network using only image of vehicle.
@@ -61,6 +69,8 @@ I also upload the other DQN codes which I tested with the games that I made. Che
 This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pptx?dl=0) of `final presentation`
 
 
+
+### Link of the Simulators
 
 Also, this are the links for my Driving Simulators. (Windows only for now)
 
@@ -131,14 +141,12 @@ For this project, I read papers as follows.
 2. [Deep Reinforcement Learning with Double Q-Learning](https://arxiv.org/abs/1509.06461)
 3. [Prioritized Experience Replay](https://arxiv.org/abs/1511.05952)
 4. [Dueling Network Architecture for Deep Reinforcement Learning](https://arxiv.org/abs/1511.06581)
-5. [Deep Recurrent Q-Learning for Partially Observable MDPs](https://arxiv.org/abs/1507.06527)
-6. [Deep Attention Recurrent Q-Network](https://arxiv.org/abs/1512.01693)
 
    ​
 
-You can find the code of those algorithms at [my DRL github](https://github.com/Kyushik/DRL). (I should write markdown of this repository...)
+You can find the code of those algorithms at [my DRL github](https://github.com/Kyushik/DRL). 
 
-Therefore, I applied algorithms 1 ~ 4 to my DRL model. The `network model` is as follows.  
+I applied algorithms 1 ~ 4 to my DRL model. The `network model` is as follows.  
 
 <img src="./Images/Network_model.png" alt="Snesor data plotting" style="width: 700px;"/>
 
