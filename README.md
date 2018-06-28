@@ -154,6 +154,18 @@ I applied algorithms 1 ~ 4 to my DRL model. The `network model` is as follows.
 
 ## Result 
 
+#### Graphs
+
+|                        Average Speed                         |                   Average # of Lane Change                   |                    Average # of Overtake                     |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| <img src="./Images/speed.png" alt="Graph(Lane Change)" style="width: 480px;"/> | <img src="./Images/lanechange.png" alt="Graph(Lane Change)" style="width: 480px;"/> | <img src="./Images/overtake.png" alt="Graph(Lane Change)" style="width: 480px;"/> |
+
+| Input Configuration | Speed (km/h) | Number of Lane Change | Number of Overtaking |
+| :-----------------: | :----------: | :-------------------: | :------------------: |
+|     Camera Only     |   71.0776    |          15           |       35.2667        |
+|     LIDAR Only      |   71.3758    |      **14.2667**      |       38.0667        |
+|     Multi-Input     | **75.0212**  |         19.4          |       **44.8**       |
+
 #### Before Training 
 
 <img src="./Images/BeforeTraining.gif" alt="Result(Before Learning)" style="width: 480px;"/>
