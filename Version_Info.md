@@ -1,5 +1,18 @@
 # Version Information
 
+### Version 1.0
+
+#### Fixed!
+
+- Clean the RL algorithms
+
+#### Issues
+
+- Game parameters can be changed in the game scene
+- Make options (Visualize sensor data, etc...)  
+
+---
+
 ### Version 0.8
 
 #### Fixed!
