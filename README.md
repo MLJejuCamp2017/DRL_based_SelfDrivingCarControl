@@ -46,7 +46,7 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 
 * Memory: 8GB
 
-  ​
+  
 
 
 ### How to Run this Project
@@ -55,7 +55,7 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 2. download the simulator and put all the files into the environment folder
 3. open the ipynb file in the RL_algorithm folder and run it!
 
-
+<br>
 
 
 ### Description of files
@@ -68,7 +68,7 @@ I also upload the other DQN codes which I tested with the games that I made. Che
 
 This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pptx?dl=0) of `final presentation`
 
-
+<br>
 
 ### Link of the Simulators
 
@@ -82,7 +82,7 @@ Also, this are the links for my Driving Simulators. (Windows only for now)
 
 Unzip the simulator into the `environment` folder.
 
-
+<br>
 
 Specific explanation of my simulator and model is as follows.  
 
@@ -97,6 +97,8 @@ Specific explanation of my simulator and model is as follows.
   The simulator is made by [Unity ML-agents](https://unity3d.com/kr/machine-learning) 
 
 
+
+### Inputs
 
 As, I mentioned simulator provides 2 inputs to DRL algorithm. `Forward camera`, `Sensor data`. The example of those inputs are as follows. 
 
@@ -120,14 +122,76 @@ The safety functions are as follows.
 
 
 
+#### Vector Observation information
 
-As a result, the action of the vehicle is as follows.
+In this simulator, size of vector observation is **373**.
+
+0 ~ 359: LIDAR Data (1 particle for 1 degree)
+
+360 ~ 362: Left warning, Right Warning, Forward Warning (0: False, 1: True)
+
+363: Normalized forward distance
+
+364: Forward vehicle Speed
+
+365: Host Vehicle Speed
+
+**0 ~  365 are used as input data for sensor**
+
+**366 ~ 372 are used for sending information**
+
+366: Number of Overtake in a episode
+
+367: Number of lane change in a episode
+
+368 ~ 372: Longitudinal reward, Lateral reward, Overtake reward, Violation reward, collision reward
+
+(Specific information of rewards are as follows)
+
+<br>
+
+### Actions
+
+
+The action of the vehicle is as follows.
 
 - Do nothing
 - Acceleration
 - Deceleration
 - Lane change to left lane
 - Lane change to right lane
+
+<br>
+
+### Rewards
+
+In this simulator, 5 different kinds of rewards are used. 
+
+`Longitudinal reward`: ((vehicle_speed - vehicle_speed_min) / (vehicle_speed_max - vehicle_speed_min));
+
+- 0: Minimum speed, 1: Maximum speed
+
+`Lateral reward`: - 0.5 
+
+- During the lane change it continuously get lateral reward
+
+`Overtake reward`: 0.5* (num_overtake - num_overtake_old)
+
+- 0.5 / overtake
+
+` Violation reward`: -0.1
+
+- example: If vehicle do left lane change at left warning, it gets violation reward (Front and right warning also)
+
+`Collision reward`: -10
+
+- If collision happens, it gets collision reward
+
+
+
+Sum of these 5 rewards is final reward of this simulator 
+
+
 
 ---
 
