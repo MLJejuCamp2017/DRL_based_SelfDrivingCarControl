@@ -1,5 +1,17 @@
 # Version Information
 
+### Version 1.1
+
+#### Fixed!
+
+- Numbers of other vehicles can be changed with slider!!
+
+#### Issues
+
+- Make options (Visualize sensor data, etc...)  
+
+---
+
 ### Version 1.0
 
 #### Fixed!
