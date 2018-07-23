@@ -1,6 +1,6 @@
 # DRL Based Self Driving Car Control
 
-## Version 1.1
+## Version 1.2
 
 [Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
 
@@ -192,6 +192,13 @@ In this simulator, 5 different kinds of rewards are used.
 Sum of these 5 rewards is final reward of this simulator 
 
 
+
+## Sliders
+
+You can change some parameters with the Slider on the left side of simulator
+
+- Number of Vehicles (0 ~ 32) : Change the number of other vehicles
+- Random Action (0 ~ 6): Change the random action level of other vehicles
 
 ---
 
