@@ -195,7 +195,7 @@ Sum of these 5 rewards is final reward of this simulator
 
 ## Sliders
 
-<img src="./Images/slider.png" alt="Slider" style="width: 400px;"/>
+<img src="./Images/slider.PNG" alt="Slider" style="width: 400px;"/>
 
 You can change some parameters with the Slider on the left side of simulator
 
