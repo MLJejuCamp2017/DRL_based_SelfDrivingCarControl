@@ -191,9 +191,11 @@ In this simulator, 5 different kinds of rewards are used.
 
 Sum of these 5 rewards is final reward of this simulator 
 
-
+<br>
 
 ## Sliders
+
+<img src="./Images/slider.png" alt="Slider" style="width: 400px;"/>
 
 You can change some parameters with the Slider on the left side of simulator
 
