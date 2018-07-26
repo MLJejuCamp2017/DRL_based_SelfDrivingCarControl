@@ -200,7 +200,7 @@ Sum of these 5 rewards is final reward of this simulator
 You can change some parameters with the Slider on the left side of simulator
 
 - Number of Vehicles (0 ~ 32) : Change the number of other vehicles
-- Random Action (0 ~ 6): Change the random action level of other vehicles
+- Random Action (0 ~ 6): Change the random action level of other vehicles (Higher value, more random action)
 
 ---
 
