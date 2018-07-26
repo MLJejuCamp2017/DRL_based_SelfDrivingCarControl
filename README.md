@@ -10,6 +10,8 @@
 
 Paper of this Project is accepted to Intelligent Vehicle Symposium 2018!! :smile: 
 
+[IV2018 PPT](https://www.dropbox.com/s/tzv2dfo1qcmp64z/Kyushik_IEEE%20IV%202018%20presentation.pdf?dl=0)
+
 ![IV2018](./Images/IV2018.PNG)
 
 
@@ -66,7 +68,7 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 
 I also upload the other DQN codes which I tested with the games that I made. Check out [my DRL github repo](https://github.com/Kyushik/DRL) 
 
-This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pptx?dl=0) of `final presentation`
+This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pptx?dl=0) of `final presentation(Jeju Camp)`
 
 <br>
 
@@ -120,7 +122,7 @@ The safety functions are as follows.
 - Side warning: No lane change 
 - Lane keeping: If vehicle is not in the center of the lane, move vehicle to the center of the lane. 
 
-
+<br>
 
 #### Vector Observation information
 
