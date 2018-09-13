@@ -1,5 +1,18 @@
 # Version Information
 
+### Version 1.3
+
+#### Fixed!
+
+- Training speed is much faster!! (Time scale = 100)
+- More DRL algorithms are implemented (DQN, QR-DQN)
+
+#### Issues
+
+- Make options (Visualize sensor data, etc...)  
+
+------
+
 ### Version 1.2
 
 #### Fixed!

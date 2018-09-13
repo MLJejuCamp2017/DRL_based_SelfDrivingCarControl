@@ -1,6 +1,6 @@
 # DRL Based Self Driving Car Control
 
-## Version 1.2
+## Version 1.3
 
 [Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
 
