@@ -1,3 +1,0 @@
-1. Unzip the environment zip file into this folder.
-2. Open the ipynb files with jupyter notebook
-3. Run the jupyter notebook and it's done!!

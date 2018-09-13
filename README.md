@@ -36,10 +36,10 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 ### Environment of this project
 
 **Software** 
-* Windows7 (64bit)
-* Python 3.5.2
-* Anaconda 4.2.0
-* Tensorflow 1.3.0
+* Windows10 (64bit)
+* Python 3.6.5
+* Anaconda 5.2.0
+* Tensorflow 1.8.0
 
 **Hardware**
 * CPU: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHZ
@@ -48,7 +48,6 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 
 * Memory: 8GB
 
-  
 
 
 ### How to Run this Project
