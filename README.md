@@ -73,7 +73,7 @@ This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pp
 
 ### Link of the Simulators
 
-Also, this are the links for my Driving Simulators. (Windows only for now)
+Also, this are the links for my Driving Simulators. 
 
 [Simulator](https://www.dropbox.com/s/7xti37jv3d28u1z/environment_windows.zip?dl=0) - Windows
 
