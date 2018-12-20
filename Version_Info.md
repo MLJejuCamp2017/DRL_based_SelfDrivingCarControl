@@ -1,5 +1,19 @@
 # Version Information
 
+### Version 1.4
+
+#### Fixed!
+
+- Simulator is updated to Unity ML-agents 0.6! 
+
+#### Issues
+
+- Add construction site
+- Add sensor noise
+- Add fog 
+
+---
+
 ### Version 1.3
 
 #### Fixed!
