@@ -1,6 +1,6 @@
 # DRL Based Self Driving Car Control
 
-## Version 1.4
+## Version 1.5
 
 [Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
 
@@ -202,6 +202,22 @@ You can change some parameters with the Slider on the left side of simulator
 
 - Number of Vehicles (0 ~ 32) : Change the number of other vehicles
 - Random Action (0 ~ 6): Change the random action level of other vehicles (Higher value, more random action)
+
+<br>
+
+## Additional Options
+
+### Foggy Weather 
+
+If you change the Foggy Weather dropdown menu to on, there will be fog to disturb camera image as follows. 
+
+<img src="./Images/foggy_option.png" alt="Foggy Option" style="width: 500px;"/>
+
+
+
+The Driver View images of the foggy weather are as follows. 
+
+<img src="./Images/fog_examples.PNG" alt="Foggy Examples" style="width: 800px;"/>
 
 ---
 

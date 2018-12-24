@@ -1,8 +1,21 @@
 # Version Information
 
+### Version 1.5
+
+#### Updated!
+
+- Foggy weather option is added 
+
+#### Issues
+
+- Add construction site
+- Add sensor noise
+
+---
+
 ### Version 1.4
 
-#### Fixed!
+#### Updated!
 
 - Simulator is updated to Unity ML-agents 0.6! 
 
@@ -16,7 +29,7 @@
 
 ### Version 1.3
 
-#### Fixed!
+#### Updated!
 
 - Training speed is much faster!! (Time scale = 100)
 - More DRL algorithms are implemented (DQN, QR-DQN)
@@ -29,7 +42,7 @@
 
 ### Version 1.2
 
-#### Fixed!
+#### Updated!
 
 - Random action level other vehicles can be changed with slider!!
 
@@ -41,7 +54,7 @@
 
 ### Version 1.1
 
-#### Fixed!
+#### Updated!
 
 - Numbers of other vehicles can be changed with slider!!
 
@@ -53,7 +66,7 @@
 
 ### Version 1.0
 
-#### Fixed!
+#### Updated!
 
 - Clean the RL algorithms
 
@@ -66,7 +79,7 @@
 
 ### Version 0.8
 
-#### Fixed!
+#### Updated!
 
 - Linux and Mac versions are published
 - Front distance problem is fixed
@@ -79,11 +92,11 @@
 
 ### Version 0.7
 
-####Major Update!!
+#### Major Update!!
 
 Simulator is changed to Unity ML agents!!
 
-#### Fixed!
+#### Updated!
 
 - Resolution problem is fixed
 - Sensor problem is fixed
@@ -101,7 +114,7 @@ Simulator is changed to Unity ML agents!!
 
 ### Version 0.6
 
-#### Fixed!
+#### Updated!
 
 - Recommended resolution = 16:9
 - Plot is replaced by `tensorboard`
@@ -120,7 +133,7 @@ Simulator is changed to Unity ML agents!!
 
 ### Version 0.5
 
-#### Fixed!
+#### Updated!
 
 - Mac and Linux version simulator is available!! :) 
 
@@ -136,7 +149,7 @@ Simulator is changed to Unity ML agents!!
 
 ### Version 0.4
 
-#### Fixed!
+#### Updated!
 
 - Null error problem is fixed
 - Forward control parameter is fixed
@@ -154,7 +167,7 @@ Simulator is changed to Unity ML agents!!
 
 ### Version 0.3
 
-#### Fixed!
+#### Updated!
 
 - There are three front warning sensors for vehicles (Front Left, Center, Right)
 - Vehicles control their speed same as the speed of the vehicle at the front when there is front warning.
@@ -172,7 +185,7 @@ Simulator is changed to Unity ML agents!!
 
 ### Version 0.2
 
-#### Fixed!
+#### Updated!
 
 - The major problem is solved! `No disconnection` happens in 150000 steps! Yeah~ 😃
 - There is `no error message` in simulator, so it doesn't need to build it as a developer version
@@ -188,7 +201,7 @@ Simulator is changed to Unity ML agents!!
 
 ### version 0.1
 
-#### Issues
+#### Updated
 
 - Sometimes connection of simulator and DRL code is disconnected
 - Simulator is developer version, sometimes error message can be appeared, so please close the console
