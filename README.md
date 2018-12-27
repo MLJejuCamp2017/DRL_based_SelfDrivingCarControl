@@ -1,6 +1,6 @@
 # DRL Based Self Driving Car Control
 
-## Version 1.5
+## Version 1.6
 
 [Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
 
@@ -211,13 +211,27 @@ You can change some parameters with the Slider on the left side of simulator
 
 If you change the Foggy Weather dropdown menu to on, there will be fog to disturb camera image as follows. 
 
-<img src="./Images/foggy_option.png" alt="Foggy Option" style="width: 500px;"/>
+<img src="./Images/foggy_option.png" alt="Foggy Option" style="width: 600px;"/>
 
 
 
 The Driver View images of the foggy weather are as follows. 
 
 <img src="./Images/fog_examples.PNG" alt="Foggy Examples" style="width: 800px;"/>
+
+
+
+### Sensor Noise
+
+<img src="./Images/SensorNoise.png" alt="sensor Noise" style="width: 600px;"/>
+
+Sensor noise can be applied!! 
+
+If you set the Sensor Noise dropdown to On, you can control the Noise Weight using Slider. The equation of the adding noise to parameter `a` is as follows. <br>
+
+a = a + (noise_weight * Random.Range(-a, a))
+
+
 
 ---
 

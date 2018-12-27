@@ -1,5 +1,17 @@
 # Version Information
 
+### Version 1.6
+
+#### Updated!
+
+- Sensor noise option is added 
+
+#### Issues
+
+- Add construction site
+
+---
+
 ### Version 1.5
 
 #### Updated!
