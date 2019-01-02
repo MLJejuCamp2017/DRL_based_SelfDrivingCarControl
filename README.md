@@ -211,13 +211,13 @@ You can change some parameters with the Slider on the left side of simulator
 
 If you change the Foggy Weather dropdown menu to on, there will be fog to disturb camera image as follows. 
 
-<img src="./Images/foggy_option.png" alt="Foggy Option" style="width: 600px;"/>
+<img src="./Images/foggy_option.png" alt="Foggy Option" style="width: 500px;"/>
 
 
 
 The Driver View images of the foggy weather are as follows. 
 
-<img src="./Images/fog_examples.PNG" alt="Foggy Examples" style="width: 800px;"/>
+<img src="./Images/fog_examples.png" alt="Foggy Examples" style="width: 800px;"/>
 
 
 
