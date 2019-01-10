@@ -12,6 +12,8 @@ Paper of this Project is accepted to Intelligent Vehicle Symposium 2018!! :smile
 
 [IV2018 PPT](https://www.dropbox.com/s/tzv2dfo1qcmp64z/Kyushik_IEEE%20IV%202018%20presentation.pdf?dl=0)
 
+[Link of IV2018 Paper](https://ieeexplore.ieee.org/document/8500645)
+
 ![IV2018](./Images/IV2018.PNG)
 
 
@@ -272,13 +274,19 @@ I applied algorithms 1 ~ 4 to my DRL model. The `network model` is as follows.
 
 #### Before Training 
 
-<img src="./Images/BeforeTraining.gif" alt="Result(Before Learning)" style="width: 480px;"/>
+<img src="./Images/BeforeTraining.gif" alt="Result(Before Training)" style="width: 480px;"/>
 
 
 
 #### After Training
 
-<img src="./Images/After_training.gif" alt="Result(After Learning)" style="width: 480px;"/>
+<img src="./Images/After_training.gif" alt="Result(After Training)" style="width: 480px;"/>
+
+
+
+#### After Training (with fog)
+
+<img src="./Images/After_training_fog.gif" alt="Result(After Training_fog)" style="width: 480px;"/>
 
 
 
