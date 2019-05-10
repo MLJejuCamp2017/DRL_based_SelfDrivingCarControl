@@ -1,8 +1,10 @@
 # DRL Based Self Driving Car Control
 
-## Version 1.6
+## Version 1.7
 
 [Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
+
+[Unity Scripts](<https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/tree/master/Unity_Scripts>) are provided! 
 
 ---
 

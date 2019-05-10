@@ -1,5 +1,13 @@
 # Version Information
 
+### Version 1.7
+
+#### Updated!
+
+- Unity Scripts are provided in **Unity_Scripts** folder. 
+
+---
+
 ### Version 1.6
 
 #### Updated!
