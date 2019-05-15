@@ -1,0 +1,222 @@
+fileFormatVersion: 2
+guid: aba374de11af7ec4abe68b31660bfd6e
+labels:
+- 3D
+- Power-up
+- Arcade
+- 8-bit
+- Retro
+- Icon
+timeCreated: 18446744011573954816
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: powerup_01
+    100004: powerup_02
+    100006: powerup_03
+    100008: powerup_04
+    100010: powerup_05
+    100012: powerup_06
+    100014: powerup_07
+    100016: powerup_08
+    100018: powerup_09
+    100020: powerup_10
+    100022: powerup_11
+    100024: powerup_12
+    100026: powerup_13
+    100028: powerup_14
+    100030: powerup_15
+    100032: powerup_16
+    100034: powerup_17
+    100036: powerup_18
+    100038: powerup_19
+    100040: powerup_20
+    100042: powerup_21
+    100044: powerup_22
+    100046: powerup_23
+    100048: powerup_24
+    100050: powerup_25
+    400000: //RootNode
+    400002: powerup_01
+    400004: powerup_02
+    400006: powerup_03
+    400008: powerup_04
+    400010: powerup_05
+    400012: powerup_06
+    400014: powerup_07
+    400016: powerup_08
+    400018: powerup_09
+    400020: powerup_10
+    400022: powerup_11
+    400024: powerup_12
+    400026: powerup_13
+    400028: powerup_14
+    400030: powerup_15
+    400032: powerup_16
+    400034: powerup_17
+    400036: powerup_18
+    400038: powerup_19
+    400040: powerup_20
+    400042: powerup_21
+    400044: powerup_22
+    400046: powerup_23
+    400048: powerup_24
+    400050: powerup_25
+    2300000: //RootNode
+    2300002: powerup_01
+    2300004: powerup_02
+    2300006: powerup_03
+    2300008: powerup_04
+    2300010: powerup_05
+    2300012: powerup_06
+    2300014: powerup_07
+    2300016: powerup_08
+    2300018: powerup_09
+    2300020: powerup_10
+    2300022: powerup_11
+    2300024: powerup_12
+    2300026: powerup_13
+    2300028: powerup_14
+    2300030: powerup_15
+    2300032: powerup_16
+    2300034: powerup_17
+    2300036: powerup_18
+    2300038: powerup_19
+    2300040: powerup_20
+    2300042: powerup_21
+    2300044: powerup_22
+    2300046: powerup_23
+    2300048: powerup_24
+    2300050: powerup_25
+    3300000: //RootNode
+    3300002: powerup_01
+    3300004: powerup_02
+    3300006: powerup_03
+    3300008: powerup_04
+    3300010: powerup_05
+    3300012: powerup_06
+    3300014: powerup_07
+    3300016: powerup_08
+    3300018: powerup_09
+    3300020: powerup_10
+    3300022: powerup_11
+    3300024: powerup_12
+    3300026: powerup_13
+    3300028: powerup_14
+    3300030: powerup_15
+    3300032: powerup_16
+    3300034: powerup_17
+    3300036: powerup_18
+    3300038: powerup_19
+    3300040: powerup_20
+    3300042: powerup_21
+    3300044: powerup_22
+    3300046: powerup_23
+    3300048: powerup_24
+    3300050: powerup_25
+    4300000: pow_up_01
+    4300002: powerup_01
+    4300004: powerup_20
+    4300006: powerup_19
+    4300008: powerup_14
+    4300010: powerup_07
+    4300012: powerup_11
+    4300014: powerup_12
+    4300016: powerup_04
+    4300018: powerup_03
+    4300020: powerup_02
+    4300022: powerup_18
+    4300024: powerup_13
+    4300026: powerup_15
+    4300028: powerup_17
+    4300030: powerup_09
+    4300032: powerup_10
+    4300034: powerup_16
+    4300036: powerup_08
+    4300038: powerup_06
+    4300040: powerup_05
+    4300042: powerup_21
+    4300044: powerup_22
+    4300046: powerup_23
+    4300048: powerup_24
+    4300050: powerup_25
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 0
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

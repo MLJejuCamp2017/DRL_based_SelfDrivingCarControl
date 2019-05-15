@@ -1,10 +1,10 @@
 # DRL Based Self Driving Car Control
 
-## Version 1.7
+## Version 1.8
 
 [Version information](https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/blob/master/Version_Info.md) of this project
 
-[Unity Scripts](<https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/tree/master/Unity_Scripts>) are provided! 
+[Unity Project](<https://github.com/MLJejuCamp2017/DRL_based_SelfDrivingCarControl/tree/master/Unity_SDK>) is provided! Please refer to the simulator section. 
 
 ---
 
@@ -101,7 +101,17 @@ Specific explanation of my simulator and model is as follows.
 
   The simulator is made by [Unity ML-agents](https://unity3d.com/kr/machine-learning) 
 
+<br>
 
+**Unity Project of the Simulator is Provided without paid assets!! **. Please open the **Unity_SDK** folder with [Unity](https://unity.com). Therefore, you should buy and import the following assets in the project to use it. 
+
+[SimpleSky](<https://assetstore.unity.com/packages/3d/simple-sky-cartoon-assets-42373>) 
+
+[SimpleTown](<https://assetstore.unity.com/packages/3d/environments/urban/simple-town-cartoon-assets-43500>)
+
+[SimpleRacer](<https://assetstore.unity.com/packages/3d/vehicles/land/simple-racer-cartoon-assets-37490>)
+
+<br>
 
 ### Inputs
 
