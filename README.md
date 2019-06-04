@@ -10,15 +10,21 @@
 
 ## Introduction
 
-Paper of this Project is accepted to Intelligent Vehicle Symposium 2018!! :smile: 
+[2018. 10. 22] Paper of this Project is accepted to Intelligent Vehicle Symposium 2018!! :smile: 
+
+[2019. 05. 28] Paper of this Project is accepted to [IEEE Transactions on Intelligent Vehicles](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=7274857)!! 😄 
 
 [IV2018 PPT](https://www.dropbox.com/s/tzv2dfo1qcmp64z/Kyushik_IEEE%20IV%202018%20presentation.pdf?dl=0)
 
 [Link of IV2018 Paper](https://ieeexplore.ieee.org/document/8500645)
 
+[Link of IEEE Transactions on Intelligent Vehicles Paper](<https://ieeexplore.ieee.org/abstract/document/8723635>)
+
 ![IV2018](./Images/IV2018.PNG)
 
+![IV2018](./Images/IV_Transaction.png)
 
+---
 
 This repository is for `Deep Reinforcement Learning Based Self Driving Car Control` project in [ML Jeju Camp 2017](http://mlcampjeju.com/)
 
@@ -303,3 +309,29 @@ I applied algorithms 1 ~ 4 to my DRL model. The `network model` is as follows.
 
 
 After training, host vehicle drives mush faster (almost at the maximum speed!!!) with little lane change!! Yeah! :happy:
+
+
+
+## Citation
+
+```
+@inproceedings{min2018deep,
+  title={Deep Q Learning Based High Level Driving Policy Determination},
+  author={Min, Kyushik and Kim, Hayoung},
+  booktitle={2018 IEEE Intelligent Vehicles Symposium (IV)},
+  pages={226--231},
+  year={2018},
+  organization={IEEE}
+}
+```
+
+```
+@article{min2019deep,
+  title={Deep Distributional Reinforcement Learning Based High Level Driving Policy Determination},
+  author={Min, Kyushik and Kim, Hayoung and Huh, Kunsoo},
+  journal={IEEE Transactions on Intelligent Vehicles},
+  year={2019},
+  publisher={IEEE}
+}
+```
+
