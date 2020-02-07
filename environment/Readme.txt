@@ -1,1 +1,0 @@
-Environment should be unzipped in this folder!!
