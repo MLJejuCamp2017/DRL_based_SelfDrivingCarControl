@@ -43,7 +43,7 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 
 
 
-### Environment of this project
+### Software and Hardware configuration of this project
 
 **Software** 
 * Windows10 (64bit)
@@ -63,35 +63,33 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 ### How to Run this Project
 
 1. download the github repo
-2. download the simulator and put all the files into the environment folder
-3. open the ipynb file in the RL_algorithm folder and run it!
+2. open the ipynb file in the RL_algorithm folder 
+3. Set the environment path and run it!
+
+<br>
+
+### Environment Path Setting
+
+<img src="./Images/env_path.png" alt="Env path" style="width: 1000px;"/>
+
+You should select os  between `Windows`, `Mac` and `Linux`. 
+
+Also, for using this environment in Linux, you should `chmod` to change the access mode of a .x86_64 file. Example code of chmod is as follows. 
+
+chmod -R 775 *.x86_64
 
 <br>
 
 
 ### Description of files
-* Dueling_Image.ipynb: Dueling network using only image of vehicle.
-* Dueling_sensor.ipynb: Dueling network using only sensor data of vehicle.
-* Dueling_image_sensor.ipynb: Dueling network using both image and sensor of vehicle
+* ***_Image.ipynb: Network using only image of vehicle.
+* ***_sensor.ipynb: Network using only sensor data of vehicle.
+* ***_image_sensor.ipynb: Network using both image and sensor of vehicle
 
 
-I also upload the other DQN codes which I tested with the games that I made. Check out [my DRL github repo](https://github.com/Kyushik/DRL) 
+I also upload the other DQN based algorithms which I tested with the games that I made. Check out [my DRL github repo](https://github.com/Kyushik/DRL) 
 
 This is my [PPT file](https://www.dropbox.com/s/3t4jruqtzgvi4gv/Kyushik_Final.pptx?dl=0) of `final presentation(Jeju Camp)`
-
-<br>
-
-### Link of the Simulators
-
-Also, this are the links for my Driving Simulators. 
-
-[Simulator](https://www.dropbox.com/s/7xti37jv3d28u1z/environment_windows.zip?dl=0) - Windows
-
-[Simulator](https://www.dropbox.com/s/eurh69orthwx2hv/environment_mac.zip?dl=0) - Mac
-
-[Simulator](https://www.dropbox.com/s/lehnq7e1zm8r6rg/environment_linux.zip?dl=0) - Linux
-
-Unzip the simulator into the `environment` folder.
 
 <br>
 
@@ -266,7 +264,7 @@ For this project, I read papers as follows.
 3. [Prioritized Experience Replay](https://arxiv.org/abs/1511.05952)
 4. [Dueling Network Architecture for Deep Reinforcement Learning](https://arxiv.org/abs/1511.06581)
 
-   ​
+   
 
 You can find the code of those algorithms at [my DRL github](https://github.com/Kyushik/DRL). 
 
