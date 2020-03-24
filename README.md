@@ -41,7 +41,7 @@ Simple overview of my project is as follows.
 
 I will use sensor data and camera image as inputs of DRL algorithm. DRL algorithm decides action according to the inputs. If the action may cause dangerous situation, ADAS controls the vehicle to avoid collision. 
 
-
+<br>
 
 ### Software and Hardware configuration of this project
 
@@ -58,7 +58,7 @@ I will use sensor data and camera image as inputs of DRL algorithm. DRL algorith
 
 * Memory: 8GB
 
-
+<br>
 
 ### How to Run this Project
 
@@ -107,7 +107,7 @@ Specific explanation of my simulator and model is as follows.
 
 <br>
 
-**Unity Project of the Simulator is Provided without paid assets!! **. Please open the **Unity_SDK** folder with [Unity](https://unity.com). Therefore, you should buy and import the following assets in the project to use it. 
+**Unity Project of the Simulator is Provided without paid assets!!**. Please open the **Unity_SDK** folder with [Unity](https://unity.com). Therefore, you should buy and import the following assets in the project to use it. 
 
 [SimpleSky](<https://assetstore.unity.com/packages/3d/simple-sky-cartoon-assets-42373>) 
 
